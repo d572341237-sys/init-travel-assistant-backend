@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>VoyageAI - Itinerary Details</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@600;700&amp;family=Inter:wght@400;600&amp;family=JetBrains+Mono:wght@500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "on-background": "#0b1c30",
+                      "on-tertiary-fixed": "#311300",
+                      "on-error-container": "#93000a",
+                      "surface-container": "#e5eeff",
+                      "map-polyline": "#1890ff",
+                      "surface": "#f8f9ff",
+                      "error-container": "#ffdad6",
+                      "surface-empty": "#f1f5f9",
+                      "on-secondary-container": "#006f69",
+                      "inverse-on-surface": "#eaf1ff",
+                      "inverse-primary": "#a5c8ff",
+                      "error": "#ba1a1a",
+                      "on-tertiary-container": "#fffbff",
+                      "on-primary-fixed-variant": "#004785",
+                      "secondary": "#006a64",
+                      "on-error": "#ffffff",
+                      "primary-container": "#0075d5",
+                      "on-primary": "#ffffff",
+                      "primary-fixed-dim": "#a5c8ff",
+                      "tertiary-container": "#b95a00",
+                      "primary": "#005daa",
+                      "surface-variant": "#d3e4fe",
+                      "secondary-fixed-dim": "#50dad1",
+                      "surface-bright": "#f8f9ff",
+                      "tertiary-fixed-dim": "#ffb688",
+                      "surface-container-lowest": "#ffffff",
+                      "on-secondary": "#ffffff",
+                      "surface-container-low": "#eff4ff",
+                      "on-secondary-fixed": "#00201e",
+                      "tertiary": "#934600",
+                      "tertiary-fixed": "#ffdbc7",
+                      "on-primary-fixed": "#001c3a",
+                      "outline": "#707785",
+                      "secondary-container": "#6ef4ea",
+                      "on-primary-container": "#fefcff",
+                      "surface-dim": "#cbdbf5",
+                      "map-marker": "#f5222d",
+                      "primary-fixed": "#d4e3ff",
+                      "inverse-surface": "#213145",
+                      "outline-variant": "#c0c7d6",
+                      "on-tertiary": "#ffffff",
+                      "weather-rain": "#4fa1ff",
+                      "secondary-fixed": "#72f7ed",
+                      "surface-container-high": "#dce9ff",
+                      "surface-tint": "#005fae",
+                      "on-tertiary-fixed-variant": "#733600",
+                      "on-surface": "#0b1c30",
+                      "weather-sunny": "#faad14",
+                      "on-surface-variant": "#404753",
+                      "surface-container-highest": "#d3e4fe",
+                      "background": "#f8f9ff",
+                      "on-secondary-fixed-variant": "#00504b"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "stack-sm": "8px",
+                      "max-width": "1440px",
+                      "margin-desktop": "32px",
+                      "stack-lg": "24px",
+                      "gutter": "16px",
+                      "margin-mobile": "16px",
+                      "stack-md": "16px"
+              },
+              "fontFamily": {
+                      "headline-lg-mobile": [
+                              "Hanken Grotesk"
+                      ],
+                      "body-lg": [
+                              "Inter"
+                      ],
+                      "headline-md": [
+                              "Hanken Grotesk"
+                      ],
+                      "headline-lg": [
+                              "Hanken Grotesk"
+                      ],
+                      "data-mono": [
+                              "JetBrains Mono"
+                      ],
+                      "body-sm": [
+                              "Inter"
+                      ],
+                      "label-caps": [
+                              "Inter"
+                      ]
+              },
+              "fontSize": {
+                      "headline-lg-mobile": [
+                              "24px",
+                              {
+                                      "lineHeight": "32px",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "body-lg": [
+                              "16px",
+                              {
+                                      "lineHeight": "24px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "headline-md": [
+                              "20px",
+                              {
+                                      "lineHeight": "28px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "headline-lg": [
+                              "32px",
+                              {
+                                      "lineHeight": "40px",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "data-mono": [
+                              "13px",
+                              {
+                                      "lineHeight": "16px",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "body-sm": [
+                              "14px",
+                              {
+                                      "lineHeight": "20px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "label-caps": [
+                              "12px",
+                              {
+                                      "lineHeight": "16px",
+                                      "letterSpacing": "0.05em",
+                                      "fontWeight": "600"
+                              }
+                      ]
+              }
+            }
+          }
+        }
+      </script>
+</head>
+<body class="bg-background text-on-background antialiased min-h-screen pt-16 pb-8 md:pl-64 flex flex-col items-center">
+<!-- TopNavBar (Mobile) / Top Row elements -->
+<nav class="bg-surface shadow-sm flex justify-between items-center w-full px-margin-mobile md:px-margin-desktop h-16 fixed top-0 z-50 md:hidden">
+<div class="font-headline-md text-headline-md font-bold text-primary">VoyageAI</div>
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-primary cursor-pointer hover:bg-surface-container-low p-2 rounded-full transition-colors" data-icon="notifications">notifications</span>
+<img alt="User profile avatar" class="w-8 h-8 rounded-full object-cover" data-alt="A realistic user avatar profile picture showing a diverse, friendly individual looking slightly off-camera. The lighting is soft and flattering, suitable for a professional yet approachable application profile image. Background is a neutral, light gray to keep the focus on the subject." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDqmsF8NLNk_QEHCLKk6tya6dVvDYcj33eqSjxbjV7KCHbl_64M0Ht_XYWGQpXDztPujIT2v_eS1ajkP6-7R3JjWm0KYwy2-ApnEVw_v2slYgeKMYmLKO4UVdGLYxGF1RljKIMC6jzOaLIzvFGzO3-w7AZ9TTnh-veZQBebaZJ3G60oNk4I57ywYDSe3gZEVyWzb0UVN3fIACaibRvp9UPws7Xe1ojiP7vZm6E3Bin6ZxPizVQRdRcX"/>
+</div>
+</nav>
+<!-- SideNavBar (Desktop) -->
+<aside class="hidden md:flex fixed left-0 top-0 bottom-0 w-64 bg-surface-container-low shadow-md flex-col p-4 z-40">
+<div class="flex items-center gap-3 mb-8 px-2 pt-4">
+<img alt="Travel Assistant Logo" class="w-10 h-10 rounded-lg object-cover" data-alt="A minimalist, modern app logo for 'Travel Assistant'. The icon features a sleek, geometric representation of a compass or a globe, utilizing shades of deep primary blue and a touch of teal. It sits on a pristine white background, exuding intelligence and efficiency." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBfBLu-DuQsdPEmRrViJjqRt0qfH3o8CWRgemJT4_H31Zmi6y-xvPXIPncjxfYKpIckzk3U2FlyRAbEYIxzOBut6HKN9UD2ckeHpa6XzylcBpzkg2MmK484NXEoB6p0EUfb1wRq6ECFHXynZvz0avakY5l_9MrmhKlNoRl0CB_7QqZy9UhRFkuutOhFE9jMHPnMez7_JC_56js4TOlYfawdsrlJ876TsfzS67-b2BTADXF5iWD990QL"/>
+<div>
+<h1 class="font-headline-md text-headline-md text-on-surface">Travel Hub</h1>
+<p class="font-body-sm text-body-sm text-on-surface-variant">AI-Powered Itineraries</p>
+</div>
+</div>
+<button class="w-full bg-primary text-on-primary font-label-caps text-label-caps py-3 rounded-xl mb-6 shadow-sm hover:opacity-90 transition-opacity">New Trip</button>
+<nav class="flex-1 flex flex-col gap-2">
+<a class="flex items-center gap-3 px-4 py-3 bg-primary-container text-on-primary-container rounded-xl font-bold transition-all duration-300 ease-in-out" href="#">
+<span class="material-symbols-outlined" data-icon="history" style="font-variation-settings: 'FILL' 1;">history</span>
+<span class="font-label-caps text-label-caps">Recent Trips</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container rounded-xl transition-all duration-300 ease-in-out" href="#">
+<span class="material-symbols-outlined" data-icon="bookmark">bookmark</span>
+<span class="font-label-caps text-label-caps">Saved Places</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container rounded-xl transition-all duration-300 ease-in-out" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="font-label-caps text-label-caps">Route Settings</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container rounded-xl transition-all duration-300 ease-in-out" href="#">
+<span class="material-symbols-outlined" data-icon="stars">stars</span>
+<span class="font-label-caps text-label-caps">Member Perks</span>
+</a>
+</nav>
+<div class="mt-auto flex flex-col gap-2 pt-4 border-t border-outline-variant/30">
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container rounded-xl transition-all duration-300 ease-in-out" href="#">
+<span class="material-symbols-outlined" data-icon="help">help</span>
+<span class="font-label-caps text-label-caps">Help Center</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container rounded-xl transition-all duration-300 ease-in-out" href="#">
+<span class="material-symbols-outlined" data-icon="logout">logout</span>
+<span class="font-label-caps text-label-caps">Log Out</span>
+</a>
+</div>
+</aside>
+<main class="w-full max-w-[max-width] px-margin-mobile md:px-margin-desktop py-8 flex flex-col gap-stack-lg">
+<!-- Header Section -->
+<header class="flex flex-col gap-stack-sm md:gap-stack-md">
+<div class="flex items-center gap-2 text-on-surface-variant font-body-sm text-body-sm">
+<a class="hover:text-primary transition-colors" href="#">Planning</a>
+<span class="material-symbols-outlined text-[16px]">chevron_right</span>
+<span class="text-on-surface font-medium">Tokyo Exploration</span>
+</div>
+<div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
+<div>
+<h1 class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-surface">Tokyo: 3-Day Culture &amp; Tech</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant mt-2">Oct 12 - Oct 14 • Moderate Pace</p>
+</div>
+<div class="flex gap-3 w-full md:w-auto">
+<button class="flex-1 md:flex-none flex items-center justify-center gap-2 bg-surface-container-high text-primary px-4 py-2 rounded-lg font-label-caps text-label-caps hover:bg-surface-container-highest transition-colors">
+<span class="material-symbols-outlined" data-icon="share">share</span>
+                        Share
+                    </button>
+<button class="flex-1 md:flex-none flex items-center justify-center gap-2 bg-primary text-on-primary px-4 py-2 rounded-lg font-label-caps text-label-caps hover:opacity-90 transition-opacity shadow-sm">
+<span class="material-symbols-outlined" data-icon="map">map</span>
+                        View Map
+                    </button>
+</div>
+</div>
+</header>
+<!-- Weather & Clothing Section -->
+<section class="bg-surface-container-lowest rounded-xl p-6 shadow-sm border border-outline-variant/20 flex flex-col md:flex-row gap-6 items-start">
+<div class="flex-shrink-0 w-full md:w-1/3">
+<h2 class="font-headline-md text-headline-md text-on-surface mb-4 flex items-center gap-2">
+<span class="material-symbols-outlined text-weather-sunny">light_mode</span>
+                    Forecast &amp; Gear
+                </h2>
+<div class="flex items-center gap-4 mb-4">
+<div class="text-4xl font-light text-on-surface">22°<span class="text-xl text-on-surface-variant">C</span></div>
+<div class="flex flex-col">
+<span class="font-body-sm text-body-sm text-on-surface-variant">Mostly Sunny</span>
+<span class="font-label-caps text-label-caps text-secondary bg-secondary-container px-2 py-1 rounded-md inline-block mt-1">Perfect for walking</span>
+</div>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Expect mild days and slightly cooler evenings during mid-October in Tokyo.</p>
+</div>
+<div class="flex-grow grid grid-cols-1 sm:grid-cols-2 gap-4 w-full">
+<div class="bg-surface-container p-4 rounded-lg flex gap-3">
+<span class="material-symbols-outlined text-primary mt-1" data-icon="checkroom">checkroom</span>
+<div>
+<h3 class="font-body-sm text-body-sm font-semibold text-on-surface">Clothing</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1">Light layers. T-shirts with a light jacket or sweater for the evening.</p>
+</div>
+</div>
+<div class="bg-surface-container p-4 rounded-lg flex gap-3">
+<span class="material-symbols-outlined text-primary mt-1" data-icon="directions_walk">directions_walk</span>
+<div>
+<h3 class="font-body-sm text-body-sm font-semibold text-on-surface">Footwear</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1">Comfortable sneakers are essential. Expect 10k+ steps daily.</p>
+</div>
+</div>
+<div class="bg-surface-container p-4 rounded-lg flex gap-3">
+<span class="material-symbols-outlined text-primary mt-1" data-icon="umbrella">umbrella</span>
+<div>
+<h3 class="font-body-sm text-body-sm font-semibold text-on-surface">Accessories</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1">Compact umbrella (just in case), daypack, power bank.</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Itinerary Timeline -->
+<section class="flex flex-col gap-stack-lg">
+<!-- Day 1 Card -->
+<div class="bg-surface-container-lowest rounded-xl shadow-sm border border-outline-variant/20 overflow-hidden">
+<!-- Day Header -->
+<div class="bg-surface-container-low px-6 py-4 flex justify-between items-center border-b border-outline-variant/20">
+<div class="flex items-center gap-3">
+<div class="bg-primary text-on-primary w-10 h-10 rounded-full flex items-center justify-center font-headline-md text-headline-md shadow-sm">1</div>
+<div>
+<h2 class="font-headline-md text-headline-md text-on-surface">Oct 12: Asakusa &amp; Akihabara</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Tradition meets Technology</p>
+</div>
+</div>
+<button class="text-primary hover:bg-surface-container p-2 rounded-full transition-colors">
+<span class="material-symbols-outlined" data-icon="expand_more">expand_more</span>
+</button>
+</div>
+<!-- Embedded Map Zone (Mobile fixed height, Desktop adaptive) -->
+<div class="h-60 md:h-72 w-full relative bg-surface-dim border-b border-outline-variant/20">
+<img alt="Map of Day 1 Route" class="w-full h-full object-cover" data-alt="A clean, modern top-down map UI showing a route between Asakusa and Akihabara in Tokyo. The map style is minimalist, using light grays and off-whites for landmasses and subtle blues for water. A clear, thick primary blue line indicates the travel route, with prominent red markers highlighting key stops. The aesthetic is clean, corporate, and highly functional, typical of a premium navigation application." data-location="Tokyo, Japan" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC9m36AO4YCdF_CLQZZLz06sx0vddRs13AZJQfCCU4IgnuItpdzrVxQrt_htMAN3bp7aqmHKNVzWXDxi2ujerOB5UBdeA87uQ_q50RApjZ4p9OW0voY3G31qmt0uWu5y8xjsLwCZDl9kF_ihBn_lJbb7_a7hVW0dqEvqzOpD2F9IGjaNd3OQ-jznHYs0_S2UNytmZJw6CNFlUxmAJj5WquuIwTbPqCCxrb81z6gJpHDdxple9Puumr0"/>
+<div class="absolute bottom-4 right-4 bg-surface-container-lowest p-2 rounded-lg shadow-md flex gap-2">
+<span class="material-symbols-outlined text-map-marker text-sm">location_on</span>
+<span class="font-data-mono text-data-mono text-on-surface">3 Stops</span>
+</div>
+</div>
+<!-- Timeline Items -->
+<div class="p-6 flex flex-col gap-6 relative">
+<!-- Vertical Line connecting items -->
+<div class="absolute left-[39px] top-8 bottom-8 w-0.5 bg-outline-variant/30 hidden sm:block"></div>
+<!-- Item 1 -->
+<div class="flex gap-4 relative z-10">
+<div class="flex-shrink-0 w-12 flex flex-col items-center">
+<div class="w-8 h-8 rounded-full bg-surface-container-high border-2 border-surface-container-lowest flex items-center justify-center text-primary z-10 shadow-sm">
+<span class="material-symbols-outlined text-sm" data-icon="temple_buddhist">temple_buddhist</span>
+</div>
+<span class="font-data-mono text-data-mono text-on-surface-variant mt-2">09:00</span>
+</div>
+<div class="flex-grow bg-surface-container-low/50 rounded-lg p-4 hover:shadow-sm transition-shadow">
+<h3 class="font-headline-md text-headline-md text-on-surface">Senso-ji Temple</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1 mb-3">Tokyo's oldest Buddhist temple. Explore Nakamise shopping street for traditional snacks.</p>
+<div class="flex gap-2 flex-wrap">
+<span class="bg-surface text-on-surface-variant font-label-caps text-label-caps px-2 py-1 rounded-md text-[10px] border border-outline-variant/20">Culture</span>
+<span class="bg-surface text-on-surface-variant font-label-caps text-label-caps px-2 py-1 rounded-md text-[10px] border border-outline-variant/20">2 Hours</span>
+</div>
+</div>
+</div>
+<!-- Transport Tip -->
+<div class="flex gap-4 sm:ml-6 relative z-10">
+<div class="flex-shrink-0 w-8 flex justify-center">
+<span class="material-symbols-outlined text-outline-variant text-sm mt-1" data-icon="train">train</span>
+</div>
+<div class="flex-grow flex items-center gap-2">
+<span class="font-data-mono text-data-mono text-on-surface-variant text-xs">Ginza Line (G) towards Shibuya • 15 mins</span>
+</div>
+</div>
+<!-- Item 2 -->
+<div class="flex gap-4 relative z-10">
+<div class="flex-shrink-0 w-12 flex flex-col items-center">
+<div class="w-8 h-8 rounded-full bg-surface-container-high border-2 border-surface-container-lowest flex items-center justify-center text-primary z-10 shadow-sm">
+<span class="material-symbols-outlined text-sm" data-icon="sports_esports">sports_esports</span>
+</div>
+<span class="font-data-mono text-data-mono text-on-surface-variant mt-2">12:30</span>
+</div>
+<div class="flex-grow bg-surface-container-low/50 rounded-lg p-4 hover:shadow-sm transition-shadow">
+<h3 class="font-headline-md text-headline-md text-on-surface">Akihabara Electric Town</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1 mb-3">Center of otaku culture, electronics, and themed cafes. Grab lunch at a local Ramen spot.</p>
+<div class="flex gap-2 flex-wrap">
+<span class="bg-surface text-on-surface-variant font-label-caps text-label-caps px-2 py-1 rounded-md text-[10px] border border-outline-variant/20">Shopping</span>
+<span class="bg-surface text-on-surface-variant font-label-caps text-label-caps px-2 py-1 rounded-md text-[10px] border border-outline-variant/20">Food</span>
+<span class="bg-surface text-on-surface-variant font-label-caps text-label-caps px-2 py-1 rounded-md text-[10px] border border-outline-variant/20">3 Hours</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Day 2 Card (Collapsed State) -->
+<div class="bg-surface-container-lowest rounded-xl shadow-sm border border-outline-variant/20 overflow-hidden opacity-80 hover:opacity-100 transition-opacity cursor-pointer">
+<div class="px-6 py-4 flex justify-between items-center">
+<div class="flex items-center gap-3">
+<div class="bg-surface-container-high text-on-surface-variant w-10 h-10 rounded-full flex items-center justify-center font-headline-md text-headline-md">2</div>
+<div>
+<h2 class="font-headline-md text-headline-md text-on-surface">Oct 13: Shibuya &amp; Harajuku</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant">Fashion, Parks, and the Scramble</p>
+</div>
+</div>
+<button class="text-on-surface-variant p-2">
+<span class="material-symbols-outlined" data-icon="chevron_right">chevron_right</span>
+</button>
+</div>
+</div>
+</section>
+<!-- Accommodation Recommendations -->
+<section class="mt-8 bg-surface-container rounded-xl p-6 border border-outline-variant/10">
+<h2 class="font-headline-md text-headline-md text-on-surface mb-4 flex items-center gap-2">
+<span class="material-symbols-outlined text-primary" data-icon="bed">bed</span>
+                Where to Stay
+            </h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-6">Based on your itinerary, these areas offer the best connectivity and vibe.</p>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+<!-- Area 1 -->
+<div class="bg-surface-container-lowest p-4 rounded-lg shadow-sm flex gap-4 items-start">
+<div class="w-16 h-16 rounded-md bg-surface-dim overflow-hidden flex-shrink-0">
+<img alt="Shinjuku Area" class="w-full h-full object-cover" data-alt="A well-lit, professional photograph of a modern hotel room interior in Shinjuku, Tokyo. The room features clean lines, neutral colors with a pop of primary blue, and a large window showing a blurry cityscape. The style is contemporary, emphasizing comfort and efficiency, fitting a corporate travel context." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDT6Ga_liehzcG6IlANd88bAzb2yc1LK2AjlWI1IMnWRlq7MApFsq6OQYPiJQ0l0QWQNDoVNZ37_ZVCgNSnzXHaLv6YBhLXNGVRWniLEhDDjlloXhmbexXpw-yuZULpV5IQ2RsqCfGP0sqYo10OOlxI9LVupoj-N8DUKuHvEgcVFVAqCBgFMUvbzuRKa0wu-VSty6jjilM4YZrflvgxZCTHwiH4S9EWEzrvzEn0yoAXwdUZYicRlJQO"/>
+</div>
+<div>
+<h3 class="font-headline-md text-headline-md text-on-surface text-base">Shinjuku</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1 text-xs">Best for nightlife and major transit connections. Very central.</p>
+<span class="inline-block mt-2 font-label-caps text-label-caps text-primary bg-primary-container/30 px-2 py-1 rounded text-[10px]">Highly Recommended</span>
+</div>
+</div>
+<!-- Area 2 -->
+<div class="bg-surface-container-lowest p-4 rounded-lg shadow-sm flex gap-4 items-start">
+<div class="w-16 h-16 rounded-md bg-surface-dim overflow-hidden flex-shrink-0">
+<img alt="Ueno Area" class="w-full h-full object-cover" data-alt="A bright, inviting street-level view of an upscale neighborhood in Ueno, Tokyo. The scene is calm, featuring leafy trees, neat sidewalks, and modern, low-rise architecture. The lighting is soft morning sunlight, suggesting a peaceful, accessible environment suitable for families or relaxed travelers." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBn1ZLg-mkjfE9nlfPBK-hAxa-7Z_8aB1fRmfrQsyy8nuF77A5o_ewJQezHNto-7fC5kJaPco1SAs70h719Ra_Qojf_eMO2jJvMqPI-lFyKF7tHLIUBr9b_BCK8w9YKkJARpkBz8PSk4NxmrDH7aMY8WPEacnabiphdW0a338-EuUDaVrlAs5whTIPOKya8BJpBvhT8IGJpSMkQKYDCL22oOg6w7Dl9_NQ2zE5he4fw0idxoeJw_nR7"/>
+</div>
+<div>
+<h3 class="font-headline-md text-headline-md text-on-surface text-base">Ueno</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1 text-xs">Great for families, close to parks, museums, and direct airport trains.</p>
+<span class="inline-block mt-2 font-label-caps text-label-caps text-secondary bg-secondary-container/30 px-2 py-1 rounded text-[10px]">Budget Friendly</span>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="w-full bg-surface-container-lowest border-t border-outline-variant/30 py-8 px-margin-mobile md:px-margin-desktop flex flex-col md:flex-row justify-between items-center gap-4 mt-auto z-10 relative">
+<div class="font-headline-md text-headline-md text-on-surface-variant">VoyageAI</div>
+<div class="flex gap-6">
+<a class="font-body-sm text-body-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Privacy Policy</a>
+<a class="font-body-sm text-body-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Terms of Service</a>
+<a class="font-body-sm text-body-sm text-on-surface-variant hover:text-primary transition-colors" href="#">Contact Support</a>
+</div>
+<div class="font-body-sm text-body-sm text-on-surface-variant opacity-80">© 2024 VoyageAI Smart Travel. All rights reserved.</div>
+</footer>
+</body></html>

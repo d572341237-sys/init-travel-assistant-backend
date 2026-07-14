@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Map View &amp; Routes - VoyageAI</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@600;700&amp;family=Inter:wght@400;600&amp;family=JetBrains+Mono:wght@500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "on-background": "#0b1c30",
+                      "on-tertiary-fixed": "#311300",
+                      "on-error-container": "#93000a",
+                      "surface-container": "#e5eeff",
+                      "map-polyline": "#1890ff",
+                      "surface": "#f8f9ff",
+                      "error-container": "#ffdad6",
+                      "surface-empty": "#f1f5f9",
+                      "on-secondary-container": "#006f69",
+                      "inverse-on-surface": "#eaf1ff",
+                      "inverse-primary": "#a5c8ff",
+                      "error": "#ba1a1a",
+                      "on-tertiary-container": "#fffbff",
+                      "on-primary-fixed-variant": "#004785",
+                      "secondary": "#006a64",
+                      "on-error": "#ffffff",
+                      "primary-container": "#0075d5",
+                      "on-primary": "#ffffff",
+                      "primary-fixed-dim": "#a5c8ff",
+                      "tertiary-container": "#b95a00",
+                      "primary": "#005daa",
+                      "surface-variant": "#d3e4fe",
+                      "secondary-fixed-dim": "#50dad1",
+                      "surface-bright": "#f8f9ff",
+                      "tertiary-fixed-dim": "#ffb688",
+                      "surface-container-lowest": "#ffffff",
+                      "on-secondary": "#ffffff",
+                      "surface-container-low": "#eff4ff",
+                      "on-secondary-fixed": "#00201e",
+                      "tertiary": "#934600",
+                      "tertiary-fixed": "#ffdbc7",
+                      "on-primary-fixed": "#001c3a",
+                      "outline": "#707785",
+                      "secondary-container": "#6ef4ea",
+                      "on-primary-container": "#fefcff",
+                      "surface-dim": "#cbdbf5",
+                      "map-marker": "#f5222d",
+                      "primary-fixed": "#d4e3ff",
+                      "inverse-surface": "#213145",
+                      "outline-variant": "#c0c7d6",
+                      "on-tertiary": "#ffffff",
+                      "weather-rain": "#4fa1ff",
+                      "secondary-fixed": "#72f7ed",
+                      "surface-container-high": "#dce9ff",
+                      "surface-tint": "#005fae",
+                      "on-tertiary-fixed-variant": "#733600",
+                      "on-surface": "#0b1c30",
+                      "weather-sunny": "#faad14",
+                      "on-surface-variant": "#404753",
+                      "surface-container-highest": "#d3e4fe",
+                      "background": "#f8f9ff",
+                      "on-secondary-fixed-variant": "#00504b"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "stack-sm": "8px",
+                      "max-width": "1440px",
+                      "margin-desktop": "32px",
+                      "stack-lg": "24px",
+                      "gutter": "16px",
+                      "margin-mobile": "16px",
+                      "stack-md": "16px"
+              },
+              "fontFamily": {
+                      "headline-lg-mobile": ["Hanken Grotesk"],
+                      "body-lg": ["Inter"],
+                      "headline-md": ["Hanken Grotesk"],
+                      "headline-lg": ["Hanken Grotesk"],
+                      "data-mono": ["JetBrains Mono"],
+                      "body-sm": ["Inter"],
+                      "label-caps": ["Inter"]
+              },
+              "fontSize": {
+                      "headline-lg-mobile": ["24px", {"lineHeight": "32px", "fontWeight": "700"}],
+                      "body-lg": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                      "headline-md": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                      "headline-lg": ["32px", {"lineHeight": "40px", "fontWeight": "700"}],
+                      "data-mono": ["13px", {"lineHeight": "16px", "fontWeight": "500"}],
+                      "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                      "label-caps": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}]
+              }
+      },
+          },
+        }
+    </script>
+</head>
+<body class="bg-background text-on-background min-h-screen font-body-lg flex flex-col pt-16 md:pl-64">
+<!-- TopNavBar (Web & Mobile, Suppress Active state as this is a sub-view within Planning) -->
+<header class="bg-surface dark:bg-on-background shadow-sm flex justify-between items-center w-full px-margin-mobile md:px-margin-desktop h-16 fixed top-0 z-50 md:left-64 md:w-[calc(100%-16rem)]">
+<div class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg font-bold text-primary dark:text-primary-fixed">VoyageAI</div>
+<!-- Mobile Menu Toggle -->
+<button class="md:hidden text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">menu</span>
+</button>
+<nav class="hidden md:flex gap-6">
+<a class="text-on-surface-variant dark:text-outline-variant hover:text-primary dark:hover:text-primary-fixed transition-colors" href="#">Planning</a>
+<a class="text-on-surface-variant dark:text-outline-variant hover:text-primary dark:hover:text-primary-fixed transition-colors" href="#">History</a>
+<a class="text-on-surface-variant dark:text-outline-variant hover:text-primary dark:hover:text-primary-fixed transition-colors" href="#">Profile</a>
+</nav>
+<div class="hidden md:flex items-center gap-4">
+<button class="text-on-surface-variant hover:text-primary transition-colors hover:bg-surface-container-low p-2 rounded-full"><span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">notifications</span></button>
+<button class="text-on-surface-variant hover:text-primary transition-colors hover:bg-surface-container-low p-2 rounded-full"><span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">settings</span></button>
+<img alt="User profile avatar" class="w-8 h-8 rounded-full border border-outline-variant object-cover" data-alt="A clean, modern corporate headshot avatar of a user on a white background, highly professional lighting, high resolution, suitable for a web application profile picture." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD0BLoETCmY87zwLMcs92_6mplYeHAzQ4kSfGM3b3B5fTrIHH-PObgb3bD-5cLGH9ZtBclWFKZn0gs04He4EjdMiDoou2E4TaalvV16arf-bCXQgrISPkC78BSAbNCG1OamMi0ltkuuXQXMUpcuexByoWZAz33ChUbZAD9_sgvAq1x8IngriHpXdaV9Ok1K6fI0KLjBbmjWMEavbzUJOkn6bcjlxRyqX0j8Nfe6FEjDyP5FaSi6hu_G"/>
+</div>
+</header>
+<!-- SideNavBar (Web Only) -->
+<aside class="hidden md:flex fixed left-0 top-0 bottom-0 w-64 bg-surface-container-low dark:bg-on-background shadow-md flex-col p-4 z-40 transition-all duration-300 ease-in-out">
+<div class="flex items-center gap-3 mb-8 px-2 mt-4">
+<div class="w-10 h-10 rounded-full bg-primary-container text-on-primary-container flex items-center justify-center">
+<span class="material-symbols-outlined">flight_takeoff</span>
+</div>
+<div>
+<h2 class="font-headline-md text-headline-md text-on-surface dark:text-surface-bright">Travel Hub</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant">AI-Powered Itineraries</p>
+</div>
+</div>
+<button class="w-full bg-primary text-on-primary font-label-caps text-label-caps py-3 rounded-lg mb-8 hover:opacity-90 transition-opacity flex justify-center items-center gap-2">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">add</span>
+            New Trip
+        </button>
+<nav class="flex flex-col gap-2 flex-grow">
+<!-- Active State: Route Settings as it aligns closest to Map View & Routes -->
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant dark:text-outline-variant hover:bg-surface-container dark:hover:bg-surface-container-highest/20 rounded-xl transition-colors" href="#">
+<span class="material-symbols-outlined">history</span>
+<span class="font-label-caps text-label-caps">Recent Trips</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant dark:text-outline-variant hover:bg-surface-container dark:hover:bg-surface-container-highest/20 rounded-xl transition-colors" href="#">
+<span class="material-symbols-outlined">bookmark</span>
+<span class="font-label-caps text-label-caps">Saved Places</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 bg-primary-container dark:bg-primary text-on-primary-container dark:text-on-primary rounded-xl font-bold transition-colors" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">settings</span>
+<span class="font-label-caps text-label-caps">Route Settings</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant dark:text-outline-variant hover:bg-surface-container dark:hover:bg-surface-container-highest/20 rounded-xl transition-colors" href="#">
+<span class="material-symbols-outlined">stars</span>
+<span class="font-label-caps text-label-caps">Member Perks</span>
+</a>
+</nav>
+<div class="mt-auto border-t border-outline-variant/30 pt-4 flex flex-col gap-2">
+<a class="flex items-center gap-3 px-4 py-2 text-on-surface-variant dark:text-outline-variant hover:bg-surface-container rounded-xl transition-colors" href="#">
+<span class="material-symbols-outlined">help</span>
+<span class="font-label-caps text-label-caps">Help Center</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-2 text-on-surface-variant dark:text-outline-variant hover:bg-surface-container rounded-xl transition-colors" href="#">
+<span class="material-symbols-outlined">logout</span>
+<span class="font-label-caps text-label-caps">Log Out</span>
+</a>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="flex-grow p-margin-mobile md:p-margin-desktop flex flex-col gap-stack-lg max-w-max-width mx-auto w-full relative z-0">
+<!-- Header -->
+<div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-stack-md">
+<div>
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile md:font-headline-lg md:text-headline-lg text-on-background">Map View &amp; Routes</h1>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1">Detailed daily navigation and segment analysis.</p>
+</div>
+<div class="flex gap-2">
+<button class="bg-surface-container-low text-on-surface-variant px-4 py-2 rounded-lg font-label-caps text-label-caps hover:bg-surface-container transition-colors flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]">file_download</span> Export
+                </button>
+</div>
+</div>
+<!-- Bento Grid Layout -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-stack-lg">
+<!-- Map Container (Takes up 8 columns on large screens) -->
+<div class="lg:col-span-8 bg-surface-container-lowest rounded-xl shadow-sm border border-outline-variant/20 overflow-hidden flex flex-col h-[600px] lg:h-[800px]">
+<!-- Map Tabs -->
+<div class="flex border-b border-outline-variant/20 bg-surface-container-lowest overflow-x-auto no-scrollbar">
+<button class="px-6 py-4 font-label-caps text-label-caps text-primary border-b-2 border-primary bg-surface-container-low/50 whitespace-nowrap">Day 1: Arrival &amp; City Center</button>
+<button class="px-6 py-4 font-label-caps text-label-caps text-on-surface-variant hover:bg-surface-container-low/30 whitespace-nowrap transition-colors">Day 2: Historical District</button>
+<button class="px-6 py-4 font-label-caps text-label-caps text-on-surface-variant hover:bg-surface-container-low/30 whitespace-nowrap transition-colors">Day 3: Coastal Exploration</button>
+</div>
+<!-- Interactive Map Area Placeholder -->
+<div class="flex-grow relative bg-surface-dim">
+<img class="absolute inset-0 w-full h-full object-cover mix-blend-multiply opacity-80" data-alt="A clean, minimalist 3D map interface showing a driving route with a blue polyline connecting various red marker pins. The map style is modern, bright, and highly legible, suitable for a high-end corporate travel application. Soft shadows and clear street layouts." data-location="Tokyo" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAzrDclcqtHkF5ubpf6TwSSYF2Du4IY9Sua0p8l2mkD9g2UA74Yr2wThm_g3FAyXeC9qH7BAqHec6PgsjX8wrKUZNOFE9WSCthZeWJQpm8_x4QE6A2cb-RdgN8j9nWa3lWM7wqwlNCu7UJMh7NkXydMAgnoY7R74pmaz24dCKcEQGq2VSIqF-SfKIXwfhyYoZ6f1y8EfqE2GxufSVJ27L2rq3h48CPtBKeiaqXQfPpGjf40hDiWLivs"/>
+<!-- Overlay Controls -->
+<div class="absolute bottom-4 right-4 flex flex-col gap-2">
+<button class="w-10 h-10 bg-surface-container-lowest rounded-full shadow-md flex items-center justify-center text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined">add</span>
+</button>
+<button class="w-10 h-10 bg-surface-container-lowest rounded-full shadow-md flex items-center justify-center text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined">remove</span>
+</button>
+<button class="w-10 h-10 bg-surface-container-lowest rounded-full shadow-md flex items-center justify-center text-primary mt-2">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">my_location</span>
+</button>
+</div>
+<!-- Example Map Marker Panel -->
+<div class="absolute top-4 left-4 bg-surface-container-lowest/90 backdrop-blur-md p-4 rounded-lg shadow-md max-w-[250px] border border-outline-variant/20">
+<div class="flex items-start gap-3">
+<div class="w-8 h-8 rounded-full bg-map-marker flex items-center justify-center text-on-error flex-shrink-0 mt-1">
+<span class="material-symbols-outlined text-[16px]">museum</span>
+</div>
+<div>
+<h4 class="font-headline-md text-[16px] leading-[20px] text-on-background">National Museum</h4>
+<p class="font-body-sm text-[12px] text-on-surface-variant mt-1">Recommended stop. Allow 2 hours.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Route Segments Side Panel (Takes up 4 columns) -->
+<div class="lg:col-span-4 flex flex-col gap-stack-md">
+<div class="bg-surface-container-lowest rounded-xl shadow-sm border border-outline-variant/20 p-6 flex flex-col h-full">
+<h3 class="font-headline-md text-headline-md text-on-background mb-4">Route Breakdown</h3>
+<div class="flex items-center gap-4 mb-6 p-4 bg-surface-container-low rounded-lg">
+<div class="flex-1 text-center">
+<div class="font-data-mono text-data-mono text-primary mb-1">12.5 km</div>
+<div class="font-label-caps text-[10px] text-on-surface-variant uppercase">Total Distance</div>
+</div>
+<div class="w-px h-8 bg-outline-variant/30"></div>
+<div class="flex-1 text-center">
+<div class="font-data-mono text-data-mono text-tertiary mb-1">4h 30m</div>
+<div class="font-label-caps text-[10px] text-on-surface-variant uppercase">Est. Duration</div>
+</div>
+</div>
+<!-- Segments List -->
+<div class="flex flex-col gap-4 overflow-y-auto pr-2 relative flex-grow">
+<!-- Timeline Line Background -->
+<div class="absolute left-[15px] top-4 bottom-4 w-0.5 bg-outline-variant/20 z-0"></div>
+<!-- Segment 1 (Origin) -->
+<div class="flex gap-4 relative z-10 group">
+<div class="w-8 h-8 rounded-full bg-primary text-on-primary flex items-center justify-center border-4 border-surface-container-lowest flex-shrink-0 shadow-sm transition-transform group-hover:scale-110">
+<span class="font-data-mono text-[12px]">A</span>
+</div>
+<div class="bg-surface rounded-lg p-3 flex-grow border border-outline-variant/10 shadow-sm hover:border-primary/30 transition-colors cursor-pointer">
+<h4 class="font-headline-md text-[14px] text-on-background mb-1">Grand Central Hotel</h4>
+<p class="font-body-sm text-[12px] text-on-surface-variant">Start point • 09:00 AM</p>
+</div>
+</div>
+<!-- Transit Connection -->
+<div class="flex gap-4 relative z-10 pl-10 py-1">
+<div class="flex items-center gap-2 text-on-surface-variant">
+<span class="material-symbols-outlined text-[16px] text-map-polyline">directions_car</span>
+<span class="font-data-mono text-[11px] text-on-surface-variant bg-surface-container px-2 py-1 rounded">15 mins (2.1 km)</span>
+</div>
+</div>
+<!-- Segment 2 -->
+<div class="flex gap-4 relative z-10 group">
+<div class="w-8 h-8 rounded-full bg-surface-container-lowest text-primary border-2 border-primary flex items-center justify-center flex-shrink-0 shadow-sm transition-transform group-hover:scale-110">
+<span class="font-data-mono text-[12px]">B</span>
+</div>
+<div class="bg-surface rounded-lg p-3 flex-grow border border-outline-variant/10 shadow-sm hover:border-primary/30 transition-colors cursor-pointer">
+<h4 class="font-headline-md text-[14px] text-on-background mb-1">City Art Gallery</h4>
+<p class="font-body-sm text-[12px] text-on-surface-variant">Sightseeing • 1.5 hrs</p>
+<div class="mt-2 flex gap-1">
+<span class="inline-flex items-center text-[10px] font-label-caps bg-secondary/10 text-secondary px-2 py-0.5 rounded">Indoors</span>
+</div>
+</div>
+</div>
+<!-- Transit Connection -->
+<div class="flex gap-4 relative z-10 pl-10 py-1">
+<div class="flex items-center gap-2 text-on-surface-variant">
+<span class="material-symbols-outlined text-[16px] text-secondary">directions_walk</span>
+<span class="font-data-mono text-[11px] text-on-surface-variant bg-surface-container px-2 py-1 rounded">10 mins (0.8 km)</span>
+</div>
+</div>
+<!-- Segment 3 -->
+<div class="flex gap-4 relative z-10 group">
+<div class="w-8 h-8 rounded-full bg-surface-container-lowest text-primary border-2 border-primary flex items-center justify-center flex-shrink-0 shadow-sm transition-transform group-hover:scale-110">
+<span class="font-data-mono text-[12px]">C</span>
+</div>
+<div class="bg-surface rounded-lg p-3 flex-grow border border-outline-variant/10 shadow-sm hover:border-primary/30 transition-colors cursor-pointer">
+<h4 class="font-headline-md text-[14px] text-on-background mb-1">Riverside Cafe</h4>
+<p class="font-body-sm text-[12px] text-on-surface-variant">Lunch Break • 1 hr</p>
+</div>
+</div>
+<!-- Transit Connection -->
+<div class="flex gap-4 relative z-10 pl-10 py-1">
+<div class="flex items-center gap-2 text-on-surface-variant">
+<span class="material-symbols-outlined text-[16px] text-map-polyline">directions_car</span>
+<span class="font-data-mono text-[11px] text-on-surface-variant bg-surface-container px-2 py-1 rounded">25 mins (4.5 km)</span>
+</div>
+</div>
+<!-- Segment 4 (Destination) -->
+<div class="flex gap-4 relative z-10 group">
+<div class="w-8 h-8 rounded-full bg-map-marker text-on-error flex items-center justify-center border-4 border-surface-container-lowest flex-shrink-0 shadow-sm transition-transform group-hover:scale-110">
+<span class="material-symbols-outlined text-[16px]">location_on</span>
+</div>
+<div class="bg-surface rounded-lg p-3 flex-grow border border-outline-variant/10 shadow-sm hover:border-primary/30 transition-colors cursor-pointer">
+<h4 class="font-headline-md text-[14px] text-on-background mb-1">Botanical Gardens</h4>
+<p class="font-body-sm text-[12px] text-on-surface-variant">Final Stop • 2 hrs</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Footer -->
+<footer class="w-full py-8 px-margin-mobile md:px-margin-desktop flex flex-col md:flex-row justify-between items-center gap-4 bg-surface-container-lowest dark:bg-on-background border-t border-outline-variant/30 mt-auto md:ml-64">
+<div class="font-headline-md text-headline-md text-on-surface-variant">VoyageAI</div>
+<div class="font-body-sm text-body-sm text-on-surface-variant">© 2024 VoyageAI Smart Travel. All rights reserved.</div>
+<div class="flex gap-4">
+<a class="font-body-sm text-body-sm text-on-surface-variant dark:text-outline-variant hover:text-primary dark:hover:text-primary-fixed transition-colors opacity-80 hover:opacity-100" href="#">Privacy Policy</a>
+<a class="font-body-sm text-body-sm text-on-surface-variant dark:text-outline-variant hover:text-primary dark:hover:text-primary-fixed transition-colors opacity-80 hover:opacity-100" href="#">Terms of Service</a>
+<a class="font-body-sm text-body-sm text-on-surface-variant dark:text-outline-variant hover:text-primary dark:hover:text-primary-fixed transition-colors opacity-80 hover:opacity-100" href="#">Contact Support</a>
+</div>
+</footer>
+</body></html>

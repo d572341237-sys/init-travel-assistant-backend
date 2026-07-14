@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>VoyageAI - Error</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@600;700&amp;family=Inter:wght@400;600&amp;family=JetBrains+Mono:wght@500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "on-background": "#0b1c30",
+                      "on-tertiary-fixed": "#311300",
+                      "on-error-container": "#93000a",
+                      "surface-container": "#e5eeff",
+                      "map-polyline": "#1890ff",
+                      "surface": "#f8f9ff",
+                      "error-container": "#ffdad6",
+                      "surface-empty": "#f1f5f9",
+                      "on-secondary-container": "#006f69",
+                      "inverse-on-surface": "#eaf1ff",
+                      "inverse-primary": "#a5c8ff",
+                      "error": "#ba1a1a",
+                      "on-tertiary-container": "#fffbff",
+                      "on-primary-fixed-variant": "#004785",
+                      "secondary": "#006a64",
+                      "on-error": "#ffffff",
+                      "primary-container": "#0075d5",
+                      "on-primary": "#ffffff",
+                      "primary-fixed-dim": "#a5c8ff",
+                      "tertiary-container": "#b95a00",
+                      "primary": "#005daa",
+                      "surface-variant": "#d3e4fe",
+                      "secondary-fixed-dim": "#50dad1",
+                      "surface-bright": "#f8f9ff",
+                      "tertiary-fixed-dim": "#ffb688",
+                      "surface-container-lowest": "#ffffff",
+                      "on-secondary": "#ffffff",
+                      "surface-container-low": "#eff4ff",
+                      "on-secondary-fixed": "#00201e",
+                      "tertiary": "#934600",
+                      "tertiary-fixed": "#ffdbc7",
+                      "on-primary-fixed": "#001c3a",
+                      "outline": "#707785",
+                      "secondary-container": "#6ef4ea",
+                      "on-primary-container": "#fefcff",
+                      "surface-dim": "#cbdbf5",
+                      "map-marker": "#f5222d",
+                      "primary-fixed": "#d4e3ff",
+                      "inverse-surface": "#213145",
+                      "outline-variant": "#c0c7d6",
+                      "on-tertiary": "#ffffff",
+                      "weather-rain": "#4fa1ff",
+                      "secondary-fixed": "#72f7ed",
+                      "surface-container-high": "#dce9ff",
+                      "surface-tint": "#005fae",
+                      "on-tertiary-fixed-variant": "#733600",
+                      "on-surface": "#0b1c30",
+                      "weather-sunny": "#faad14",
+                      "on-surface-variant": "#404753",
+                      "surface-container-highest": "#d3e4fe",
+                      "background": "#f8f9ff",
+                      "on-secondary-fixed-variant": "#00504b"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "stack-sm": "8px",
+                      "max-width": "1440px",
+                      "margin-desktop": "32px",
+                      "stack-lg": "24px",
+                      "gutter": "16px",
+                      "margin-mobile": "16px",
+                      "stack-md": "16px"
+              },
+              "fontFamily": {
+                      "headline-lg-mobile": [
+                              "Hanken Grotesk"
+                      ],
+                      "body-lg": [
+                              "Inter"
+                      ],
+                      "headline-md": [
+                              "Hanken Grotesk"
+                      ],
+                      "headline-lg": [
+                              "Hanken Grotesk"
+                      ],
+                      "data-mono": [
+                              "JetBrains Mono"
+                      ],
+                      "body-sm": [
+                              "Inter"
+                      ],
+                      "label-caps": [
+                              "Inter"
+                      ]
+              },
+              "fontSize": {
+                      "headline-lg-mobile": [
+                              "24px",
+                              {
+                                      "lineHeight": "32px",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "body-lg": [
+                              "16px",
+                              {
+                                      "lineHeight": "24px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "headline-md": [
+                              "20px",
+                              {
+                                      "lineHeight": "28px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "headline-lg": [
+                              "32px",
+                              {
+                                      "lineHeight": "40px",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "data-mono": [
+                              "13px",
+                              {
+                                      "lineHeight": "16px",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "body-sm": [
+                              "14px",
+                              {
+                                      "lineHeight": "20px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "label-caps": [
+                              "12px",
+                              {
+                                      "lineHeight": "16px",
+                                      "letterSpacing": "0.05em",
+                                      "fontWeight": "600"
+                              }
+                      ]
+              }
+      },
+          },
+        }
+    </script>
+</head>
+<body class="bg-background text-on-background min-h-screen flex flex-col font-body-lg text-body-lg">
+<!-- TopNavBar -->
+<header class="bg-surface shadow-sm flex justify-between items-center w-full px-margin-desktop h-16 fixed top-0 z-50 transition-transform duration-200">
+<div class="flex items-center gap-4">
+<span class="font-headline-lg text-headline-lg font-bold text-primary">VoyageAI</span>
+</div>
+<!-- Navigation Suppressed for Error Page per Semantic Shell Mandate -->
+<div class="flex items-center gap-4">
+<button class="p-2 text-on-surface-variant hover:bg-surface-container-low rounded-full transition-colors flex items-center justify-center">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<button class="p-2 text-on-surface-variant hover:bg-surface-container-low rounded-full transition-colors flex items-center justify-center">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+</button>
+<img alt="User profile avatar" class="w-8 h-8 rounded-full object-cover" data-alt="A small circular avatar image showing a professional headshot of a smiling user in a bright, modern corporate style. The lighting is soft and flattering, with a clean off-white background." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAaG5wtC91Hl-xr-9tUTUgN6IZ1kyc1pxV4TtVzrmehgGoB5Kl6QBShqaW5iZeN8j2zxOFSsZYIcnhCsZ7Z5ngRjg-lpMpvJyKQKNY-WaCG0CktZADDcMxW6AmFIN_sSygvUMt9HYPDvMTQWd5dA1fHwpv8dU2ecBaQKl0reQJbC1dWHqFa9PF0J5QO8yrWYQGcvov1Vt0_CFZF2kdXlsaslOhKLCdVQRBN2-HOj9spUxqcp2vFrVw2"/>
+</div>
+</header>
+<!-- Main Content Area - Error Canvas -->
+<main class="flex-grow pt-16 flex items-center justify-center p-margin-mobile md:p-margin-desktop bg-surface-empty">
+<div class="max-w-2xl w-full text-center flex flex-col items-center gap-stack-lg">
+<!-- Illustration Area -->
+<div class="relative w-full max-w-md aspect-square mx-auto rounded-3xl overflow-hidden shadow-sm bg-surface flex items-center justify-center border border-outline-variant/20">
+<img class="w-full h-full object-cover opacity-90 mix-blend-multiply" data-alt="A stylized 3D illustration of a lost compass and a map with an 'X' marking a wrong turn. The scene uses a sleek, modern corporate aesthetic with smooth materials, soft ambient lighting, and a color palette dominated by pure whites, light grays, and accents of primary blue and vibrant red. The composition is clean, with purposeful whitespace." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCERhM6s88JOg1egCgYrus1U7YWbKN4rT6hXA9toH_4ET4uDqunW-v8hm5zC4mTOYyyBZ-R9rl3qXRl-VZV3kI77MrHRbgl5GPq93KZ7l6t13a8gzFWDLVX8mlIuTjwbVn1qHcjvpl3fNqs2tqs3VwM-9MDnEvSMb-5uz-F7cb5EMSPVRRakaE1ZjylWzObySc8qNa_nZa7wkUoKYtI2aKNr3p3KTE8O9r_sf5QiN6D5_nu8Ht-TNym"/>
+<div class="absolute inset-0 bg-gradient-to-t from-surface-empty via-transparent to-transparent"></div>
+</div>
+<div class="flex flex-col gap-stack-sm items-center">
+<h1 class="font-headline-lg text-headline-lg md:font-headline-lg text-headline-lg text-on-background">Looks like you're off the map.</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-md">
+                    We couldn't find the itinerary or destination you were looking for. It might be a temporary hiccup in our navigation systems.
+                </p>
+<div class="mt-4 flex flex-col sm:flex-row gap-gutter w-full sm:w-auto">
+<button class="bg-primary hover:bg-primary-container text-on-primary hover:text-on-primary-container font-headline-md text-headline-md py-3 px-6 rounded-lg shadow-sm hover:shadow transition-all flex items-center justify-center gap-2">
+<span class="material-symbols-outlined" data-icon="explore">explore</span>
+                        Back to Planning
+                    </button>
+<button class="bg-surface-container hover:bg-surface-container-high text-primary font-headline-md text-headline-md py-3 px-6 rounded-lg transition-colors border border-outline-variant/30 flex items-center justify-center gap-2">
+<span class="material-symbols-outlined" data-icon="refresh">refresh</span>
+                        Try Again
+                    </button>
+</div>
+</div>
+</div>
+</main>
+<!-- Footer -->
+<footer class="bg-surface-container-lowest border-t border-outline-variant/30 w-full py-8 px-margin-desktop flex flex-col md:flex-row justify-between items-center gap-4">
+<div class="font-headline-md text-headline-md text-on-surface-variant opacity-80 hover:opacity-100 transition-opacity">
+            VoyageAI
+        </div>
+<div class="flex flex-wrap justify-center gap-4 md:gap-8 text-on-surface-variant font-body-sm text-body-sm">
+<a class="hover:text-primary transition-colors" href="#">Privacy Policy</a>
+<a class="hover:text-primary transition-colors" href="#">Terms of Service</a>
+<a class="hover:text-primary transition-colors" href="#">Contact Support</a>
+</div>
+<div class="text-on-surface-variant font-body-sm text-body-sm text-center md:text-right">
+            © 2024 VoyageAI Smart Travel. All rights reserved.
+        </div>
+</footer>
+</body></html>

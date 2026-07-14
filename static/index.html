@@ -1,0 +1,1324 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>智旅助手</title>
+  <link href="https://fonts.googleapis.com" rel="preconnect" />
+  <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            "on-background": "#0b1c30",
+            "surface-container": "#e5eeff",
+            "map-polyline": "#1890ff",
+            "surface": "#f8f9ff",
+            "surface-empty": "#f1f5f9",
+            "primary-container": "#0075d5",
+            "on-primary": "#ffffff",
+            "primary": "#005daa",
+            "surface-variant": "#d3e4fe",
+            "surface-container-lowest": "#ffffff",
+            "surface-container-low": "#eff4ff",
+            "outline": "#707785",
+            "secondary-container": "#6ef4ea",
+            "on-primary-container": "#fefcff",
+            "surface-dim": "#cbdbf5",
+            "map-marker": "#f5222d",
+            "outline-variant": "#c0c7d6",
+            "weather-rain": "#4fa1ff",
+            "surface-container-high": "#dce9ff",
+            "surface-tint": "#005fae",
+            "on-surface": "#0b1c30",
+            "weather-sunny": "#faad14",
+            "on-surface-variant": "#404753",
+            "surface-container-highest": "#d3e4fe",
+            "background": "#f8f9ff",
+            "error": "#ba1a1a",
+            "error-container": "#ffdad6",
+            "secondary": "#006a64",
+            "tertiary": "#934600"
+          },
+          borderRadius: {
+            DEFAULT: "0.5rem",
+            lg: "0.75rem",
+            xl: "1rem",
+            "2xl": "1.5rem",
+            full: "9999px"
+          },
+          spacing: {
+            "stack-sm": "8px",
+            "max-width": "1440px",
+            "margin-desktop": "32px",
+            "stack-lg": "24px",
+            gutter: "16px",
+            "margin-mobile": "16px",
+            "stack-md": "16px"
+          },
+          fontFamily: {
+            "headline-lg-mobile": ["Hanken Grotesk"],
+            "body-lg": ["Inter"],
+            "headline-md": ["Hanken Grotesk"],
+            "headline-lg": ["Hanken Grotesk"],
+            "data-mono": ["JetBrains Mono"],
+            "body-sm": ["Inter"],
+            "label-caps": ["Inter"]
+          },
+          fontSize: {
+            "headline-lg-mobile": ["24px", { lineHeight: "32px", fontWeight: "700" }],
+            "body-lg": ["16px", { lineHeight: "24px", fontWeight: "400" }],
+            "headline-md": ["20px", { lineHeight: "28px", fontWeight: "600" }],
+            "headline-lg": ["32px", { lineHeight: "40px", fontWeight: "700" }],
+            "data-mono": ["13px", { lineHeight: "16px", fontWeight: "500" }],
+            "body-sm": ["14px", { lineHeight: "20px", fontWeight: "400" }],
+            "label-caps": ["12px", { lineHeight: "16px", letterSpacing: "0.05em", fontWeight: "600" }]
+          }
+        }
+      }
+    };
+  </script>
+  <style>
+    .material-symbols-outlined {
+      font-family: "Material Symbols Outlined";
+      font-weight: normal;
+      font-style: normal;
+      font-size: 24px;
+      line-height: 1;
+      letter-spacing: normal;
+      text-transform: none;
+      display: inline-block;
+      white-space: nowrap;
+      word-wrap: normal;
+      direction: ltr;
+      -webkit-font-feature-settings: "liga";
+      -webkit-font-smoothing: antialiased;
+      font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { min-height: 100%; }
+    body {
+      margin: 0;
+      background: #f8f9ff;
+      color: #0b1c30;
+      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      letter-spacing: 0;
+    }
+
+    .hidden-view { display: none !important; }
+    .panel-shadow { box-shadow: 0 8px 30px rgba(0, 0, 0, 0.04); }
+    .lifted { box-shadow: 0 12px 36px rgba(11, 28, 48, 0.08); }
+    .nav-active { background: #e5eeff; color: #005daa; }
+    .prose-result h2 { margin: 24px 0 12px; font: 700 24px/32px "Hanken Grotesk"; color: #0b1c30; }
+    .prose-result h3 { margin: 18px 0 8px; font: 600 20px/28px "Hanken Grotesk"; color: #0b1c30; }
+    .prose-result p, .prose-result li { color: #404753; line-height: 1.65; }
+    .prose-result ul { margin: 8px 0 0; padding-left: 18px; }
+    .stream-output { white-space: pre-wrap; overflow-wrap: anywhere; word-break: break-word; }
+    .route-marker {
+      width: 30px;
+      height: 30px;
+      border-radius: 999px;
+      display: grid;
+      place-items: center;
+      background: #005daa;
+      color: #fff;
+      border: 3px solid #fff;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.22);
+      font: 700 13px/1 Inter;
+    }
+    .route-label {
+      padding: 4px 8px;
+      border: 1px solid;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.94);
+      box-shadow: 0 4px 12px rgba(11, 28, 48, 0.12);
+      font: 700 12px/16px Inter;
+      white-space: nowrap;
+    }
+
+    @media (max-width: 767px) {
+      .mobile-safe-bottom { padding-bottom: 88px; }
+    }
+  </style>
+</head>
+<body class="bg-background text-on-surface font-body-lg min-h-screen">
+  <main id="authView" class="min-h-screen grid lg:grid-cols-2 bg-surface-container-lowest">
+    <section class="hidden lg:flex flex-col justify-between bg-primary text-on-primary p-12">
+      <div>
+        <div class="flex items-center gap-3">
+          <div class="w-12 h-12 rounded-2xl bg-white/15 flex items-center justify-center">
+            <span class="material-symbols-outlined">flight_takeoff</span>
+          </div>
+          <div>
+            <h1 class="font-headline-lg text-headline-lg">智旅助手</h1>
+            <p class="text-white/72">智能行程规划</p>
+          </div>
+        </div>
+      </div>
+      <div class="max-w-lg">
+        <p class="font-headline-lg text-headline-lg mb-5">把开放式旅行想法，转成可执行的日程、天气建议与每日地图路线。</p>
+        <div class="grid grid-cols-3 gap-3">
+          <div class="rounded-xl bg-white/12 p-4">
+            <div class="font-data-mono text-data-mono">多智能体</div>
+            <div class="text-sm text-white/70 mt-2">多智能体协作</div>
+          </div>
+          <div class="rounded-xl bg-white/12 p-4">
+            <div class="font-data-mono text-data-mono">流式传输</div>
+            <div class="text-sm text-white/70 mt-2">流式输出</div>
+          </div>
+          <div class="rounded-xl bg-white/12 p-4">
+            <div class="font-data-mono text-data-mono">高德地图</div>
+            <div class="text-sm text-white/70 mt-2">真实路线</div>
+          </div>
+        </div>
+      </div>
+      <p class="text-white/60 text-sm">高保真设计系统</p>
+    </section>
+
+    <section class="flex items-center justify-center px-margin-mobile py-10">
+      <div class="w-full max-w-[440px] bg-surface-container-lowest rounded-2xl border border-outline-variant/40 lifted p-8">
+        <div class="lg:hidden flex items-center gap-3 mb-8">
+          <div class="w-11 h-11 rounded-xl bg-primary/10 text-primary flex items-center justify-center">
+            <span class="material-symbols-outlined">explore</span>
+          </div>
+          <div>
+            <h1 class="font-headline-lg-mobile text-headline-lg-mobile text-primary">智旅助手</h1>
+            <p class="text-on-surface-variant text-sm">智能旅行助手</p>
+          </div>
+        </div>
+        <h2 class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg">登录 / 注册</h2>
+        <p class="text-on-surface-variant mt-2 mb-6">使用账号保存旅行偏好、历史行程和会话上下文。</p>
+        <label class="block text-sm font-semibold text-on-surface-variant mb-2" for="usernameInput">用户名</label>
+        <input id="usernameInput" class="w-full rounded-lg border-outline-variant bg-surface-container-lowest px-4 py-3 focus:border-primary focus:ring-primary" placeholder="至少 3 位字符" autocomplete="username" />
+        <label class="block text-sm font-semibold text-on-surface-variant mt-4 mb-2" for="passwordInput">密码</label>
+        <input id="passwordInput" class="w-full rounded-lg border-outline-variant bg-surface-container-lowest px-4 py-3 focus:border-primary focus:ring-primary" placeholder="至少 6 位字符" type="password" autocomplete="current-password" />
+        <div class="grid grid-cols-2 gap-3 mt-6">
+          <button id="loginBtn" class="h-11 rounded-xl bg-primary text-on-primary font-semibold hover:bg-surface-tint transition-colors">登录</button>
+          <button id="registerBtn" class="h-11 rounded-xl bg-surface-container-low border border-outline-variant/40 text-on-surface font-semibold hover:bg-surface-container transition-colors">注册</button>
+        </div>
+        <p id="authMessage" class="mt-4 min-h-6 text-sm text-on-surface-variant">没有账号时，输入用户名和密码后点击注册。</p>
+      </div>
+    </section>
+  </main>
+
+  <div id="appShell" class="hidden-view min-h-screen bg-background text-on-surface md:pl-64 mobile-safe-bottom">
+    <header class="fixed top-0 left-0 md:left-64 right-0 h-16 z-50 bg-surface/85 backdrop-blur-md border-b border-outline-variant/20 px-margin-mobile md:px-margin-desktop flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <button id="mobileMenuBtn" class="md:hidden w-10 h-10 rounded-full hover:bg-surface-container-low text-on-surface-variant">
+          <span class="material-symbols-outlined">menu</span>
+        </button>
+        <span class="font-headline-lg-mobile text-headline-lg-mobile md:font-headline-lg md:text-headline-lg text-primary">智旅助手</span>
+      </div>
+      <nav class="hidden md:flex h-full items-center gap-2">
+        <button data-view="planning" class="top-nav h-full px-4 border-b-2 border-transparent text-on-surface-variant hover:text-primary">行程规划</button>
+        <button data-view="history" class="top-nav h-full px-4 border-b-2 border-transparent text-on-surface-variant hover:text-primary">历史行程</button>
+        <button data-view="profile" class="top-nav h-full px-4 border-b-2 border-transparent text-on-surface-variant hover:text-primary">个人中心</button>
+      </nav>
+      <div class="flex items-center gap-2">
+        <span id="userLabel" class="hidden sm:inline text-sm text-on-surface-variant"></span>
+        <button id="logoutBtn" class="w-10 h-10 rounded-full hover:bg-surface-container-low text-on-surface-variant" title="退出登录">
+          <span class="material-symbols-outlined">logout</span>
+        </button>
+      </div>
+    </header>
+
+    <aside id="sideNav" class="fixed left-0 top-0 bottom-0 w-64 bg-surface-container-low border-r border-outline-variant/20 z-40 p-4 hidden md:flex flex-col">
+      <div class="flex items-center gap-3 mt-4 mb-8 px-2">
+        <div class="w-10 h-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center">
+          <span class="material-symbols-outlined">explore</span>
+        </div>
+        <div>
+          <h2 class="font-headline-md text-headline-md">旅行中心</h2>
+          <p class="font-body-sm text-body-sm text-on-surface-variant">智能行程规划</p>
+        </div>
+      </div>
+      <button data-view="planning" class="side-nav flex items-center gap-3 rounded-xl px-4 py-3 mb-2 text-left text-on-surface-variant hover:bg-surface-container">
+        <span class="material-symbols-outlined">add</span><span class="font-label-caps text-label-caps uppercase">新建行程</span>
+      </button>
+      <button data-view="history" class="side-nav flex items-center gap-3 rounded-xl px-4 py-3 mb-2 text-left text-on-surface-variant hover:bg-surface-container">
+        <span class="material-symbols-outlined">history</span><span class="font-label-caps text-label-caps uppercase">历史行程</span>
+      </button>
+      <button data-view="profile" class="side-nav flex items-center gap-3 rounded-xl px-4 py-3 text-left text-on-surface-variant hover:bg-surface-container">
+        <span class="material-symbols-outlined">tune</span><span class="font-label-caps text-label-caps uppercase">旅行偏好</span>
+      </button>
+      <div class="mt-auto border-t border-outline-variant/30 pt-4 text-sm text-on-surface-variant">
+        <p class="px-4">后端统一管理安全会话标识，前端不暴露会话编号。</p>
+      </div>
+    </aside>
+
+    <main class="pt-16 min-h-screen">
+      <section id="planningView" class="view px-margin-mobile md:px-margin-desktop py-8 max-w-[1440px] mx-auto">
+        <div id="emptyWorkbench" class="min-h-[calc(100vh-8rem)] flex flex-col items-center justify-center">
+          <div class="w-full max-w-[820px] text-center">
+            <div class="w-16 h-16 mx-auto mb-6 bg-surface-container-high rounded-2xl flex items-center justify-center text-primary shadow-sm">
+              <span class="material-symbols-outlined text-4xl">flight_takeoff</span>
+            </div>
+            <h1 class="font-headline-lg-mobile text-headline-lg-mobile md:font-headline-lg md:text-headline-lg mb-2">你想去哪里旅行？</h1>
+            <p class="text-on-surface-variant max-w-xl mx-auto mb-6">输入目的地、天数、节奏和每天游玩时间。系统会先返回候选景点，选择后再生成完整行程和每日地图。</p>
+            <div class="bg-surface-container-lowest rounded-2xl border border-outline-variant/30 panel-shadow p-2 text-left">
+              <textarea id="messageInput" class="w-full min-h-[138px] resize-none border-0 bg-transparent px-4 pt-4 pb-2 focus:ring-0 text-on-surface placeholder:text-on-surface-variant/60" placeholder="例如：帮我规划汕头3天旅行，行程不要太紧凑，每天9点开始，18点结束，并结合天气给穿衣建议。"></textarea>
+              <div class="flex items-center justify-between gap-3 rounded-xl bg-surface-container-low/60 px-3 py-2">
+                <div class="flex items-center gap-1 text-on-surface-variant">
+                  <button class="w-10 h-10 rounded-lg hover:bg-surface-container" title="旅行日期"><span class="material-symbols-outlined text-[20px]">calendar_month</span></button>
+                  <button class="w-10 h-10 rounded-lg hover:bg-surface-container" title="预算"><span class="material-symbols-outlined text-[20px]">payments</span></button>
+                  <button class="w-10 h-10 rounded-lg hover:bg-surface-container" title="偏好"><span class="material-symbols-outlined text-[20px]">tune</span></button>
+                </div>
+                <button id="sendBtn" class="h-11 px-5 rounded-xl bg-primary text-on-primary font-semibold hover:bg-surface-tint flex items-center gap-2">
+                  <span>开始规划</span><span class="material-symbols-outlined text-[20px]">arrow_forward</span>
+                </button>
+              </div>
+            </div>
+            <div class="mt-8">
+              <p class="font-label-caps text-label-caps text-on-surface-variant/70 uppercase mb-4">也可以试试这些示例</p>
+              <div class="flex flex-wrap justify-center gap-3">
+                <button class="prompt-chip px-4 py-2 rounded-full bg-surface-container border border-outline-variant/20 text-on-surface-variant hover:border-primary/40 hover:text-primary" data-prompt="帮我规划汕头3天旅行，行程不要太紧凑，每天9点开始，18点结束，并结合天气给穿衣建议。">汕头 3 天美食文化</button>
+                <button class="prompt-chip px-4 py-2 rounded-full bg-surface-container border border-outline-variant/20 text-on-surface-variant hover:border-primary/40 hover:text-primary" data-prompt="我要去泉州旅游2天，节奏轻松，每天9点到18点，先帮我推荐著名景点。">泉州 2 天古城</button>
+                <button class="prompt-chip px-4 py-2 rounded-full bg-surface-container border border-outline-variant/20 text-on-surface-variant hover:border-primary/40 hover:text-primary" data-prompt="帮我规划厦门3天亲子旅行，轻松一点，结合天气和住宿地段建议。">厦门亲子旅行</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div id="resultWorkbench" class="hidden-view grid grid-cols-1 xl:grid-cols-[minmax(320px,420px)_1fr] gap-stack-lg">
+          <section class="bg-surface-container-lowest rounded-2xl border border-outline-variant/30 panel-shadow p-4 h-fit xl:sticky xl:top-24">
+            <div class="flex items-center justify-between mb-3">
+              <h2 class="font-headline-md text-headline-md">旅行规划工作台</h2>
+              <span id="statusPill" class="rounded-full bg-surface-container-low px-3 py-1 text-xs text-on-surface-variant">就绪</span>
+            </div>
+            <textarea id="followupInput" class="w-full min-h-[150px] resize-none rounded-xl border-outline-variant bg-surface-container-lowest focus:border-primary focus:ring-primary" placeholder="继续输入，例如：选择 1、2、3、4，安排3天，轻松一点"></textarea>
+            <div class="flex gap-2 mt-3">
+              <button id="followupBtn" class="flex-1 h-11 rounded-xl bg-primary text-on-primary font-semibold hover:bg-surface-tint">发送</button>
+              <button id="newTripBtn" class="h-11 px-4 rounded-xl bg-surface-container-low border border-outline-variant/30 text-on-surface hover:bg-surface-container">新建</button>
+            </div>
+            <div class="mt-4 rounded-xl bg-surface-container-low p-4 text-sm text-on-surface-variant">
+              <div class="font-semibold text-on-surface mb-2">使用说明</div>
+              <p>先描述目的地、天数、节奏和每日时间范围。系统返回候选景点后，回复编号或景点名称继续生成完整旅行规划。</p>
+            </div>
+          </section>
+
+          <section class="space-y-stack-lg">
+            <div id="assistantPanel" class="bg-surface-container-lowest rounded-2xl border border-outline-variant/30 panel-shadow p-6">
+              <div class="flex items-center justify-between gap-4 mb-4">
+                <div>
+                  <h2 class="font-headline-lg-mobile text-headline-lg-mobile md:font-headline-lg md:text-headline-lg">旅行规划</h2>
+                  <p id="resultSubtitle" class="text-on-surface-variant mt-1">等待生成结果</p>
+                </div>
+                <div class="w-10 h-10 rounded-full bg-primary/10 text-primary flex items-center justify-center">
+                  <span class="material-symbols-outlined">smart_toy</span>
+                </div>
+              </div>
+              <div id="streamOutput" class="stream-output text-on-surface-variant leading-7 min-h-[180px]">请输入旅行需求开始规划。</div>
+            </div>
+
+            <div id="attractionPanel" class="hidden-view">
+              <div class="flex flex-col gap-stack-sm mb-4">
+                <h2 class="font-headline-lg-mobile text-headline-lg-mobile md:font-headline-lg md:text-headline-lg">候选景点</h2>
+                <p class="text-on-surface-variant">请选择你想去的景点，底部输入框支持“选择 1、3、5”这样的编号回复。</p>
+              </div>
+              <div id="attractionGrid" class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-gutter"></div>
+            </div>
+
+            <div id="planDetailPanel" class="hidden-view space-y-stack-lg">
+              <div id="planSummary"></div>
+              <div id="dailyRoutes"></div>
+              <div id="itineraryDays"></div>
+              <div id="hotelPanel"></div>
+              <div id="tipsPanel"></div>
+            </div>
+          </section>
+        </div>
+      </section>
+
+      <section id="historyView" class="view hidden-view px-margin-mobile md:px-margin-desktop py-8 max-w-[1440px] mx-auto">
+        <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-6">
+          <div>
+            <h1 class="font-headline-lg-mobile text-headline-lg-mobile md:font-headline-lg md:text-headline-lg">历史行程</h1>
+            <p class="text-on-surface-variant mt-2">回顾已经生成的旅行规划。</p>
+          </div>
+          <button id="refreshHistoryBtn" class="h-11 px-4 rounded-xl bg-surface-container-low border border-outline-variant/30 hover:bg-surface-container">刷新</button>
+        </div>
+        <div id="historyList" class="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-gutter"></div>
+      </section>
+
+      <section id="profileView" class="view hidden-view px-margin-mobile md:px-margin-desktop py-8 max-w-[1440px] mx-auto">
+        <div class="grid grid-cols-1 lg:grid-cols-[320px_1fr] gap-stack-lg">
+          <aside class="bg-surface-container-lowest rounded-2xl border border-outline-variant/30 panel-shadow p-6 h-fit">
+            <div class="w-20 h-20 rounded-full bg-primary/10 text-primary flex items-center justify-center mb-4">
+              <span class="material-symbols-outlined text-4xl">person</span>
+            </div>
+            <h1 id="profileName" class="font-headline-md text-headline-md">旅行者</h1>
+            <p class="text-on-surface-variant mt-1">用于后续行程规划的个人偏好。</p>
+            <div class="grid grid-cols-2 gap-3 mt-6">
+              <div class="rounded-xl bg-surface-container-low p-4">
+                <div class="font-data-mono text-data-mono text-primary" id="profileTripsCount">--</div>
+                <div class="text-xs text-on-surface-variant mt-1">历史行程</div>
+              </div>
+              <div class="rounded-xl bg-surface-container-low p-4">
+                <div class="font-data-mono text-data-mono text-secondary" id="profilePaceLabel">--</div>
+                <div class="text-xs text-on-surface-variant mt-1">旅行节奏</div>
+              </div>
+            </div>
+          </aside>
+          <section class="bg-surface-container-lowest rounded-2xl border border-outline-variant/30 panel-shadow p-6">
+            <h2 class="font-headline-lg-mobile text-headline-lg-mobile md:font-headline-lg md:text-headline-lg">用户画像与偏好设置</h2>
+            <p class="text-on-surface-variant mt-1 mb-6">保存旅行习惯后，后端可在规划时参考这些偏好。</p>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-gutter">
+              <label class="block">
+                <span class="text-sm font-semibold text-on-surface-variant">旅行节奏</span>
+                <select id="paceInput" class="mt-2 w-full rounded-xl border-outline-variant focus:border-primary focus:ring-primary">
+                  <option value="relaxed">轻松</option>
+                  <option value="balanced">均衡</option>
+                  <option value="packed">紧凑</option>
+                </select>
+              </label>
+              <label class="block">
+                <span class="text-sm font-semibold text-on-surface-variant">默认开始时间</span>
+                <input id="startTimeInput" class="mt-2 w-full rounded-xl border-outline-variant focus:border-primary focus:ring-primary" placeholder="09:00" />
+              </label>
+              <label class="block">
+                <span class="text-sm font-semibold text-on-surface-variant">默认结束时间</span>
+                <input id="endTimeInput" class="mt-2 w-full rounded-xl border-outline-variant focus:border-primary focus:ring-primary" placeholder="18:00" />
+              </label>
+            </div>
+            <label class="block mt-5">
+              <span class="text-sm font-semibold text-on-surface-variant">常去城市</span>
+              <input id="favoriteCitiesInput" class="mt-2 w-full rounded-xl border-outline-variant focus:border-primary focus:ring-primary" placeholder="汕头, 泉州, 厦门" />
+            </label>
+            <label class="block mt-5">
+              <span class="text-sm font-semibold text-on-surface-variant">偏好景点类型</span>
+              <input id="favoriteTypesInput" class="mt-2 w-full rounded-xl border-outline-variant focus:border-primary focus:ring-primary" placeholder="历史文化, 美食, 海滨, 博物馆" />
+            </label>
+            <label class="block mt-5">
+              <span class="text-sm font-semibold text-on-surface-variant">补充说明</span>
+              <textarea id="notesInput" class="mt-2 w-full min-h-[120px] rounded-xl border-outline-variant focus:border-primary focus:ring-primary" placeholder="例如：不喜欢太赶路，希望中午有休息时间。"></textarea>
+            </label>
+            <div class="flex items-center gap-3 mt-6">
+              <button id="saveProfileBtn" class="h-11 px-5 rounded-xl bg-primary text-on-primary font-semibold hover:bg-surface-tint">保存偏好</button>
+              <span id="profileMessage" class="text-sm text-on-surface-variant"></span>
+            </div>
+          </section>
+        </div>
+      </section>
+    </main>
+
+    <footer class="md:hidden fixed bottom-0 left-0 right-0 h-16 bg-surface-container-lowest border-t border-outline-variant/20 z-50 flex items-center justify-around">
+      <button data-view="planning" class="bottom-nav flex flex-col items-center text-primary"><span class="material-symbols-outlined">explore</span><span class="text-[10px]">规划</span></button>
+      <button data-view="history" class="bottom-nav flex flex-col items-center text-on-surface-variant"><span class="material-symbols-outlined">history</span><span class="text-[10px]">历史</span></button>
+      <button data-view="profile" class="bottom-nav flex flex-col items-center text-on-surface-variant"><span class="material-symbols-outlined">person</span><span class="text-[10px]">我的</span></button>
+    </footer>
+  </div>
+
+  <script>
+    const state = {
+      user: null,
+      activeView: "planning",
+      busy: false,
+      latestAnswer: "",
+      latestPlan: null,
+      streamingJsonPlan: false,
+      mapReadyPromise: null,
+      mapInstances: [],
+      mapOverlays: []
+    };
+
+    const els = {
+      authView: document.querySelector("#authView"),
+      appShell: document.querySelector("#appShell"),
+      usernameInput: document.querySelector("#usernameInput"),
+      passwordInput: document.querySelector("#passwordInput"),
+      authMessage: document.querySelector("#authMessage"),
+      loginBtn: document.querySelector("#loginBtn"),
+      registerBtn: document.querySelector("#registerBtn"),
+      logoutBtn: document.querySelector("#logoutBtn"),
+      userLabel: document.querySelector("#userLabel"),
+      emptyWorkbench: document.querySelector("#emptyWorkbench"),
+      resultWorkbench: document.querySelector("#resultWorkbench"),
+      messageInput: document.querySelector("#messageInput"),
+      sendBtn: document.querySelector("#sendBtn"),
+      followupInput: document.querySelector("#followupInput"),
+      followupBtn: document.querySelector("#followupBtn"),
+      newTripBtn: document.querySelector("#newTripBtn"),
+      statusPill: document.querySelector("#statusPill"),
+      resultSubtitle: document.querySelector("#resultSubtitle"),
+      streamOutput: document.querySelector("#streamOutput"),
+      attractionPanel: document.querySelector("#attractionPanel"),
+      attractionGrid: document.querySelector("#attractionGrid"),
+      planDetailPanel: document.querySelector("#planDetailPanel"),
+      planSummary: document.querySelector("#planSummary"),
+      dailyRoutes: document.querySelector("#dailyRoutes"),
+      itineraryDays: document.querySelector("#itineraryDays"),
+      hotelPanel: document.querySelector("#hotelPanel"),
+      tipsPanel: document.querySelector("#tipsPanel"),
+      historyList: document.querySelector("#historyList"),
+      refreshHistoryBtn: document.querySelector("#refreshHistoryBtn"),
+      profileName: document.querySelector("#profileName"),
+      profileTripsCount: document.querySelector("#profileTripsCount"),
+      profilePaceLabel: document.querySelector("#profilePaceLabel"),
+      paceInput: document.querySelector("#paceInput"),
+      startTimeInput: document.querySelector("#startTimeInput"),
+      endTimeInput: document.querySelector("#endTimeInput"),
+      favoriteCitiesInput: document.querySelector("#favoriteCitiesInput"),
+      favoriteTypesInput: document.querySelector("#favoriteTypesInput"),
+      notesInput: document.querySelector("#notesInput"),
+      saveProfileBtn: document.querySelector("#saveProfileBtn"),
+      profileMessage: document.querySelector("#profileMessage")
+    };
+
+    els.loginBtn.addEventListener("click", () => submitAuth("/api/auth/login"));
+    els.registerBtn.addEventListener("click", () => submitAuth("/api/auth/register"));
+    els.logoutBtn.addEventListener("click", logout);
+    els.sendBtn.addEventListener("click", () => sendMessage(els.messageInput.value));
+    els.followupBtn.addEventListener("click", () => sendMessage(els.followupInput.value));
+    els.newTripBtn.addEventListener("click", resetPlanning);
+    els.refreshHistoryBtn.addEventListener("click", loadHistory);
+    els.saveProfileBtn.addEventListener("click", saveProfile);
+
+    document.querySelectorAll("[data-view]").forEach((button) => {
+      button.addEventListener("click", () => showView(button.dataset.view));
+    });
+    document.querySelectorAll(".prompt-chip").forEach((button) => {
+      button.addEventListener("click", () => {
+        els.messageInput.value = button.dataset.prompt || "";
+        els.messageInput.focus();
+      });
+    });
+    [els.messageInput, els.followupInput].forEach((input) => {
+      input.addEventListener("keydown", (event) => {
+        if (event.key === "Enter" && (event.ctrlKey || event.metaKey)) {
+          sendMessage(input.value);
+        }
+      });
+    });
+
+    checkLogin();
+
+    async function checkLogin() {
+      try {
+        const response = await fetch("/api/auth/me", { credentials: "same-origin" });
+        if (!response.ok) {
+          showAuth();
+          return;
+        }
+        showApp(await response.json());
+      } catch {
+        showAuth();
+      }
+    }
+
+    function showAuth() {
+      state.user = null;
+      els.authView.classList.remove("hidden-view");
+      els.appShell.classList.add("hidden-view");
+    }
+
+    function showApp(user) {
+      state.user = user;
+      els.authView.classList.add("hidden-view");
+      els.appShell.classList.remove("hidden-view");
+      els.userLabel.textContent = user.username;
+      els.profileName.textContent = user.username;
+      setAuthMessage("");
+      showView(state.activeView || "planning");
+      loadHistory();
+      loadProfile();
+    }
+
+    async function submitAuth(url) {
+      const username = els.usernameInput.value.trim();
+      const password = els.passwordInput.value;
+      if (!username || !password) {
+        setAuthMessage("请输入用户名和密码。", true);
+        return;
+      }
+      setAuthBusy(true);
+      try {
+        const response = await fetch(url, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          credentials: "same-origin",
+          body: JSON.stringify({ username, password })
+        });
+        if (!response.ok) {
+          const payload = await safeJson(response);
+          throw new Error(readApiMessage(payload) || `请求失败：状态码 ${response.status}`);
+        }
+        showApp(await response.json());
+      } catch (error) {
+        setAuthMessage(error.message, true);
+      } finally {
+        setAuthBusy(false);
+      }
+    }
+
+    function setAuthBusy(isBusy) {
+      els.loginBtn.disabled = isBusy;
+      els.registerBtn.disabled = isBusy;
+    }
+
+    function setAuthMessage(message, isError = false) {
+      els.authMessage.textContent = message || "没有账号时，输入用户名和密码后点击注册。";
+      els.authMessage.className = `mt-4 min-h-6 text-sm ${isError ? "text-error" : "text-on-surface-variant"}`;
+    }
+
+    async function logout() {
+      await fetch("/api/auth/logout", { method: "POST", credentials: "same-origin" });
+      resetPlanning();
+      showAuth();
+    }
+
+    function showView(viewName) {
+      state.activeView = viewName;
+      document.querySelectorAll(".view").forEach((view) => view.classList.add("hidden-view"));
+      document.querySelector(`#${viewName}View`)?.classList.remove("hidden-view");
+      document.querySelectorAll(".side-nav").forEach((item) => item.classList.toggle("nav-active", item.dataset.view === viewName));
+      document.querySelectorAll(".top-nav").forEach((item) => {
+        item.classList.toggle("text-primary", item.dataset.view === viewName);
+        item.classList.toggle("border-primary", item.dataset.view === viewName);
+      });
+      document.querySelectorAll(".bottom-nav").forEach((item) => {
+        item.classList.toggle("text-primary", item.dataset.view === viewName);
+        item.classList.toggle("text-on-surface-variant", item.dataset.view !== viewName);
+      });
+    }
+
+    function resetPlanning() {
+      state.latestAnswer = "";
+      state.latestPlan = null;
+      state.streamingJsonPlan = false;
+      clearMaps();
+      els.messageInput.value = "";
+      els.followupInput.value = "";
+      els.emptyWorkbench.classList.remove("hidden-view");
+      els.resultWorkbench.classList.add("hidden-view");
+      els.streamOutput.textContent = "请输入旅行需求开始规划。";
+      els.resultSubtitle.textContent = "等待生成结果";
+      els.attractionPanel.classList.add("hidden-view");
+      els.planDetailPanel.classList.add("hidden-view");
+      setStatus("就绪");
+    }
+
+    async function sendMessage(rawMessage) {
+      const message = (rawMessage || "").trim();
+      if (!message || state.busy) {
+        return;
+      }
+      state.busy = true;
+      setSendBusy(true);
+      showView("planning");
+      els.emptyWorkbench.classList.add("hidden-view");
+      els.resultWorkbench.classList.remove("hidden-view");
+      els.followupInput.value = "";
+      els.streamOutput.textContent = "";
+      els.attractionPanel.classList.add("hidden-view");
+      els.planDetailPanel.classList.add("hidden-view");
+      state.latestAnswer = "";
+      state.latestPlan = null;
+      state.streamingJsonPlan = false;
+      clearMaps();
+      setStatus("生成中");
+      els.resultSubtitle.textContent = "规划智能体正在生成结果，页面只展示面向用户的最终内容。";
+
+      try {
+        const response = await fetch("/api/chat/stream", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          credentials: "same-origin",
+          body: JSON.stringify({ message })
+        });
+        if (!response.ok || !response.body) {
+          const payload = await safeJson(response);
+          throw new Error(readApiMessage(payload) || `状态码 ${response.status}`);
+        }
+        await readSseStream(response.body);
+      } catch (error) {
+        renderError(error.message);
+      } finally {
+        state.busy = false;
+        setSendBusy(false);
+        loadHistory();
+      }
+    }
+
+    function setSendBusy(isBusy) {
+      els.sendBtn.disabled = isBusy;
+      els.followupBtn.disabled = isBusy;
+      els.statusPill.textContent = isBusy ? "生成中" : "就绪";
+    }
+
+    function setStatus(text) {
+      els.statusPill.textContent = text;
+    }
+
+    async function readSseStream(body) {
+      const reader = body.getReader();
+      const decoder = new TextDecoder("utf-8");
+      let buffer = "";
+      while (true) {
+        const { value, done } = await reader.read();
+        if (done) break;
+        buffer += decoder.decode(value, { stream: true });
+        const parts = buffer.split("\n\n");
+        buffer = parts.pop() || "";
+        for (const part of parts) {
+          handleSseEvent(parseSseEvent(part));
+        }
+      }
+      if (buffer.trim()) {
+        handleSseEvent(parseSseEvent(buffer));
+      }
+    }
+
+    function parseSseEvent(raw) {
+      const lines = raw.split(/\r?\n/);
+      let event = "message";
+      const dataLines = [];
+      for (const line of lines) {
+        if (line.startsWith("event:")) event = line.slice(6).trim();
+        if (line.startsWith("data:")) dataLines.push(line.slice(5).trimStart());
+      }
+      try {
+        return { event, data: JSON.parse(dataLines.join("\n") || "{}") };
+      } catch {
+        return { event, data: { raw: dataLines.join("\n") } };
+      }
+    }
+
+    function handleSseEvent({ event, data }) {
+      if (["agent_selected", "agents_started", "node_start", "node_end"].includes(event)) return;
+      if (event === "token") {
+        appendStream(data.content || "");
+        return;
+      }
+      if (event === "message") {
+        renderAnswer(data.content || "");
+        return;
+      }
+      if (event === "done") {
+        renderAnswer(data.answer || state.latestAnswer || "");
+        setStatus("完成");
+        els.resultSubtitle.textContent = "输出完成。你可以继续补充需求，或到历史行程中回顾。";
+        return;
+      }
+      if (event === "error") {
+        renderError(data.message || "后端返回错误");
+      }
+    }
+
+    function appendStream(text) {
+      state.latestAnswer += text;
+      if (state.streamingJsonPlan || looksLikeJsonStream(state.latestAnswer)) {
+        state.streamingJsonPlan = true;
+        renderStreamingProgress();
+        return;
+      }
+      els.streamOutput.textContent += text;
+    }
+
+    function renderAnswer(answer) {
+      state.latestAnswer = answer;
+      state.streamingJsonPlan = false;
+      const plan = parsePlan(answer);
+      if (plan) {
+        state.latestPlan = plan;
+        els.streamOutput.textContent = formatPlanText(plan);
+        renderPlan(plan);
+        return;
+      }
+      els.streamOutput.textContent = answer || "暂无内容。";
+      const attractions = parseAttractions(answer);
+      if (attractions.length) {
+        renderAttractions(attractions);
+        els.resultSubtitle.textContent = "已返回候选景点，请回复编号或景点名称。";
+      }
+    }
+
+    function looksLikeJsonStream(text) {
+      const normalized = String(text || "").trimStart();
+      return normalized.startsWith("{") || normalized.startsWith("```json") || normalized.startsWith("```");
+    }
+
+    function renderStreamingProgress() {
+      els.streamOutput.innerHTML = `
+        <div class="rounded-2xl bg-surface-container-low border border-outline-variant/30 p-5 text-on-surface">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full bg-primary/10 text-primary flex items-center justify-center">
+              <span class="material-symbols-outlined">auto_awesome</span>
+            </div>
+            <div>
+              <div class="font-semibold">正在生成结构化旅行规划</div>
+              <div class="text-sm text-on-surface-variant mt-1">正在整合天气、景点地址和每日路线，完成后会自动展示为可读行程。</div>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function renderError(message) {
+      setStatus("错误");
+      els.resultSubtitle.textContent = "请求失败";
+      els.streamOutput.innerHTML = `<div class="rounded-xl bg-error-container text-error p-4">${escapeHtml(message || "未知错误")}</div>`;
+    }
+
+    function parsePlan(answer) {
+      const jsonText = extractJson(answer);
+      if (!jsonText) return null;
+      try {
+        const parsed = JSON.parse(jsonText);
+        return parsed && typeof parsed === "object" && (parsed.itinerary_days || parsed.destination || parsed.route_segments) ? parsed : null;
+      } catch {
+        return null;
+      }
+    }
+
+    function extractJson(text) {
+      if (!text) return "";
+      const fenced = text.match(/```(?:json)?\s*([\s\S]*?)```/i);
+      if (fenced) return fenced[1].trim();
+      const start = text.indexOf("{");
+      const end = text.lastIndexOf("}");
+      return start >= 0 && end > start ? text.slice(start, end + 1) : "";
+    }
+
+    function parseAttractions(text) {
+      const lines = String(text || "").split(/\r?\n/);
+      return lines.map((line) => {
+        const match = line.trim().match(/^(\d+)[\.、]\s*(.+?)(?:\s+-\s+(.+?))?(?:\s+-\s+(.+))?$/);
+        if (!match) return null;
+        return {
+          index: Number(match[1]),
+          name: match[2] || "",
+          category: match[3] || "景点",
+          address: match[4] || "地址待确认"
+        };
+      }).filter(Boolean);
+    }
+
+    function renderAttractions(attractions) {
+      els.attractionPanel.classList.remove("hidden-view");
+      els.planDetailPanel.classList.add("hidden-view");
+      els.attractionGrid.innerHTML = attractions.map((item) => `
+        <article class="bg-surface-container-lowest rounded-xl shadow-sm border border-outline-variant/30 overflow-hidden group hover:shadow-md transition-shadow relative">
+          <div class="absolute top-4 left-4 z-10 w-8 h-8 rounded-full bg-primary text-on-primary flex items-center justify-center font-headline-md text-headline-md shadow-sm">${item.index}</div>
+          <div class="h-36 bg-surface-container-high flex items-center justify-center text-primary">
+            <span class="material-symbols-outlined text-5xl">landscape</span>
+          </div>
+          <div class="p-4">
+            <h3 class="font-headline-md text-headline-md text-on-surface">${escapeHtml(item.name)}</h3>
+            <p class="text-sm text-on-surface-variant mt-2">${escapeHtml(item.category)}</p>
+            <div class="flex items-start gap-1 text-on-surface-variant text-sm mt-3">
+              <span class="material-symbols-outlined text-[16px] mt-0.5">location_on</span>
+              <p>${escapeHtml(item.address)}</p>
+            </div>
+          </div>
+        </article>
+      `).join("");
+    }
+
+    function renderPlan(plan) {
+      els.attractionPanel.classList.add("hidden-view");
+      els.planDetailPanel.classList.remove("hidden-view");
+      els.resultSubtitle.textContent = `${plan.destination || "目的地"} · ${plan.days_count || (plan.itinerary_days || []).length || "--"} 天 · ${formatPace(plan.pace || "balanced")}`;
+      renderPlanSummary(plan);
+      renderItineraryDays(plan);
+      renderHotel(plan);
+      renderTips(plan);
+      renderDailyRoutes(plan).catch((error) => {
+        els.dailyRoutes.innerHTML = renderSectionShell("每日地图路线", `<div class="rounded-xl bg-error-container text-error p-4">${escapeHtml(error.message)}</div>`);
+      });
+    }
+
+    function renderPlanSummary(plan) {
+      const weather = plan.weather_summary || {};
+      const start = plan.daily_time_window?.start || "09:00";
+      const end = plan.daily_time_window?.end || "18:00";
+      els.planSummary.innerHTML = `
+        <section class="bg-surface-container-lowest rounded-2xl border border-outline-variant/30 panel-shadow p-6">
+          <div class="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
+            <div>
+              <h2 class="font-headline-lg-mobile text-headline-lg-mobile md:font-headline-lg md:text-headline-lg">${escapeHtml(plan.destination || "旅行目的地")}</h2>
+        <p class="text-on-surface-variant mt-2">行程：${escapeHtml(plan.days_count || "--")} 天，节奏 ${escapeHtml(formatPace(plan.pace || "balanced"))}，每天 ${escapeHtml(start)} - ${escapeHtml(end)}</p>
+            </div>
+            <div class="rounded-xl bg-surface-container-low px-4 py-3 text-sm text-on-surface-variant">
+              <span class="material-symbols-outlined text-weather-rain align-middle mr-1">rainy</span>天气与出行建议
+            </div>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-gutter mt-6">
+            ${infoCard("天气", weather.summary || "暂无天气摘要", "partly_cloudy_day")}
+            ${infoCard("穿衣", weather.clothing_advice || "暂无穿衣建议", "checkroom")}
+            ${infoCard("雨具", weather.umbrella_advice || "暂无雨具建议", "umbrella")}
+          </div>
+          ${Array.isArray(weather.safety_tips) && weather.safety_tips.length ? `<ul class="mt-5 grid grid-cols-1 md:grid-cols-2 gap-2 text-sm text-on-surface-variant">${weather.safety_tips.map((tip) => `<li class="rounded-lg bg-surface-container-low px-3 py-2">${escapeHtml(tip)}</li>`).join("")}</ul>` : ""}
+        </section>
+      `;
+    }
+
+    function infoCard(title, content, icon) {
+      return `
+        <div class="rounded-xl bg-surface-container-low p-4">
+          <div class="flex items-center gap-2 text-primary font-semibold mb-2">
+            <span class="material-symbols-outlined text-[20px]">${icon}</span>${escapeHtml(title)}
+          </div>
+          <p class="text-sm text-on-surface-variant leading-6">${escapeHtml(content)}</p>
+        </div>
+      `;
+    }
+
+    function renderItineraryDays(plan) {
+      const days = Array.isArray(plan.itinerary_days) ? plan.itinerary_days : [];
+      els.itineraryDays.innerHTML = renderSectionShell("旅行路线与游玩时间", days.map((day) => `
+        <article class="bg-surface-container-lowest rounded-2xl border border-outline-variant/30 panel-shadow p-6">
+          <div class="flex items-center gap-3 mb-5">
+            <div class="w-10 h-10 rounded-full bg-primary text-on-primary flex items-center justify-center font-data-mono text-data-mono">${escapeHtml(day.day || "")}</div>
+            <div>
+              <h3 class="font-headline-md text-headline-md">第 ${escapeHtml(day.day || "")} 天：${escapeHtml(day.theme || "行程安排")}</h3>
+              <p class="text-sm text-on-surface-variant">${(day.items || []).length} 个安排</p>
+            </div>
+          </div>
+          <div class="space-y-4">
+            ${(day.items || []).map((item) => `
+              <div class="grid grid-cols-[96px_1fr] gap-4 rounded-xl bg-surface-container-low p-4">
+                <div class="font-data-mono text-data-mono text-primary">${escapeHtml(item.time || "--")}</div>
+                <div>
+                  <h4 class="font-semibold text-on-surface">${escapeHtml(item.place || "未命名地点")}</h4>
+                  ${item.address ? `<p class="text-sm text-on-surface-variant mt-1">地址：${escapeHtml(item.address)}</p>` : ""}
+                  ${item.activity ? `<p class="text-sm text-on-surface-variant mt-2">${escapeHtml(item.activity)}</p>` : ""}
+                  ${item.transport_tip ? `<p class="text-sm text-on-surface-variant mt-2">交通：${escapeHtml(item.transport_tip)}</p>` : ""}
+                  ${item.notes ? `<p class="text-sm text-tertiary mt-2">提醒：${escapeHtml(item.notes)}</p>` : ""}
+                </div>
+              </div>
+            `).join("")}
+          </div>
+        </article>
+      `).join("") || emptyBlock("暂无每日行程。"));
+    }
+
+    async function renderDailyRoutes(plan) {
+      const dayRoutes = buildDayRoutes(plan);
+      if (!dayRoutes.length) {
+        els.dailyRoutes.innerHTML = renderSectionShell("每日地图路线", emptyBlock("当前规划结果没有可展示的坐标或路线。"));
+        return;
+      }
+      els.dailyRoutes.innerHTML = renderSectionShell("每日地图路线", dayRoutes.map((dayRoute) => `
+        <article class="bg-surface-container-lowest rounded-2xl border border-outline-variant/30 panel-shadow overflow-hidden">
+          <div class="p-5 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-3 border-b border-outline-variant/20">
+            <div>
+              <h3 class="font-headline-md text-headline-md">第 ${escapeHtml(dayRoute.day)} 天：${escapeHtml(dayRoute.theme)}</h3>
+              <p class="text-sm text-on-surface-variant mt-1">${escapeHtml(buildDayRouteOverview(dayRoute))}</p>
+            </div>
+            <div class="grid grid-cols-2 gap-3 min-w-[220px]">
+              <div class="rounded-lg bg-surface-container-low px-3 py-2 text-center">
+                <div class="font-data-mono text-data-mono text-primary">${escapeHtml(formatDuration(totalDuration(dayRoute.segments)) || "--")}</div>
+                <div class="text-[10px] uppercase text-on-surface-variant">驾车时间</div>
+              </div>
+              <div class="rounded-lg bg-surface-container-low px-3 py-2 text-center">
+                <div class="font-data-mono text-data-mono text-secondary">${escapeHtml(formatDistance(totalDistance(dayRoute.segments)) || "--")}</div>
+                <div class="text-[10px] uppercase text-on-surface-variant">路线距离</div>
+              </div>
+            </div>
+          </div>
+          <div class="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_360px]">
+            <div id="map-day-${dayRoute.day}" class="h-[320px] lg:h-[420px] bg-surface-dim"></div>
+            <div class="p-5 bg-surface-container-lowest border-t lg:border-t-0 lg:border-l border-outline-variant/20">
+              <h4 class="font-semibold mb-4">路线分段</h4>
+              <div class="space-y-3">${renderSegmentCards(dayRoute)}</div>
+            </div>
+          </div>
+        </article>
+      `).join(""));
+
+      await loadMapSdk();
+      dayRoutes.forEach((dayRoute) => renderDayMap(dayRoute));
+    }
+
+    function buildDayRoutes(plan) {
+      const rawDays = Array.isArray(plan.itinerary_days) ? plan.itinerary_days : [];
+      const segments = Array.isArray(plan.route_segments) ? plan.route_segments : [];
+      const daysCount = Math.max(1, Number(plan.days_count || 0), rawDays.length, ...segments.map((item) => Number(item.day || 0)));
+      return Array.from({ length: daysCount }, (_, index) => {
+        const dayNumber = index + 1;
+        const day = rawDays.find((item, itemIndex) => Number(item.day || itemIndex + 1) === dayNumber) || { day: dayNumber, theme: "行程安排", items: [] };
+        return {
+          day: dayNumber,
+          theme: day.theme || "行程安排",
+          markers: collectDayMarkers(day),
+          segments: segments.filter((segment) => Number(segment.day || 1) === dayNumber)
+        };
+      });
+    }
+
+    function renderSegmentCards(dayRoute) {
+      if (!dayRoute.segments.length) {
+        return `<div class="rounded-xl bg-surface-container-low p-4 text-sm text-on-surface-variant">当天暂无高德驾车路线数据，地图会展示景点点位。</div>`;
+      }
+      return dayRoute.segments.map((segment, index) => `
+        <div class="rounded-xl bg-surface-container-low p-4">
+          <div class="flex items-center gap-2 text-primary font-semibold">
+            <span class="material-symbols-outlined text-[18px]">directions_car</span>
+            <span>${escapeHtml(segment.origin || "起点")} → ${escapeHtml(segment.destination || "终点")}</span>
+          </div>
+          <div class="grid grid-cols-2 gap-2 mt-3 text-sm">
+            <span class="font-data-mono text-data-mono text-on-surface">${escapeHtml(segment.duration_text || formatDuration(segment.duration_s) || "--")}</span>
+            <span class="font-data-mono text-data-mono text-on-surface">${escapeHtml(segment.distance_text || formatDistance(segment.distance_m) || "--")}</span>
+          </div>
+          <p class="text-xs text-on-surface-variant mt-2">第 ${dayRoute.day} 天第 ${index + 1} 段 · ${segment.provider === "amap_driving" ? "高德驾车规划" : "路线参考"}</p>
+        </div>
+      `).join("");
+    }
+
+    async function loadMapSdk() {
+      if (window.AMap) return window.AMap;
+      if (state.mapReadyPromise) return state.mapReadyPromise;
+      state.mapReadyPromise = (async () => {
+        const response = await fetch("/api/config/map", { credentials: "same-origin" });
+        if (!response.ok) throw new Error(`地图配置接口状态码 ${response.status}`);
+        const config = await response.json();
+        if (!config.enabled || !config.api_key) throw new Error("缺少高德网页地图密钥配置。");
+        if (config.security_code) {
+          window._AMapSecurityConfig = { securityJsCode: config.security_code };
+        }
+        await injectMapScript(config.api_key);
+        return window.AMap;
+      })();
+      return state.mapReadyPromise;
+    }
+
+    function injectMapScript(apiKey) {
+      return new Promise((resolve, reject) => {
+        if (window.AMap) {
+          resolve();
+          return;
+        }
+        const script = document.createElement("script");
+        script.src = `https://webapi.amap.com/maps?v=2.0&key=${encodeURIComponent(apiKey)}`;
+        script.async = true;
+        script.onload = resolve;
+        script.onerror = () => reject(new Error("高德地图脚本加载失败。"));
+        document.head.appendChild(script);
+      });
+    }
+
+    function renderDayMap(dayRoute) {
+      const canvas = document.querySelector(`#map-day-${dayRoute.day}`);
+      if (!canvas || !window.AMap) return;
+      const map = new window.AMap.Map(canvas, { zoom: 12, viewMode: "2D", resizeEnable: true });
+      state.mapInstances.push(map);
+      const overlays = [];
+      dayRoute.markers.forEach((marker, index) => {
+        const overlay = new window.AMap.Marker({
+          position: [marker.lng, marker.lat],
+          title: marker.title,
+          content: `<div class="route-marker">${index + 1}</div>`,
+          offset: new window.AMap.Pixel(-15, -15)
+        });
+        overlay.setMap(map);
+        overlays.push(overlay);
+      });
+      dayRoute.segments.forEach((segment) => {
+        const path = normalizePath(segment.polyline);
+        if (!path.length) return;
+        const color = routeColor(dayRoute.day);
+        const line = new window.AMap.Polyline({
+          path,
+          strokeColor: color,
+          strokeOpacity: 0.92,
+          strokeWeight: 6,
+          lineJoin: "round"
+        });
+        line.setMap(map);
+        overlays.push(line);
+        const midpoint = path[Math.floor(path.length / 2)];
+        const label = new window.AMap.Marker({
+          position: midpoint,
+          content: `<div class="route-label" style="color:${color};border-color:${color}">第 ${escapeHtml(dayRoute.day)} 天 · ${escapeHtml(segment.duration_text || "")}</div>`,
+          offset: new window.AMap.Pixel(-36, -18)
+        });
+        label.setMap(map);
+        overlays.push(label);
+      });
+      state.mapOverlays.push(...overlays);
+      if (overlays.length) {
+        map.setFitView(overlays, false, [42, 42, 42, 42]);
+      } else {
+        canvas.innerHTML = `<div class="h-full grid place-items-center text-on-surface-variant">当天暂无可展示的景点或路线。</div>`;
+      }
+    }
+
+    function clearMaps() {
+      state.mapOverlays.forEach((overlay) => overlay?.setMap?.(null));
+      state.mapInstances.forEach((map) => map?.destroy?.());
+      state.mapOverlays = [];
+      state.mapInstances = [];
+      els.dailyRoutes.innerHTML = "";
+    }
+
+    function collectDayMarkers(day) {
+      return (day.items || []).map((item) => {
+        const location = item.location || {};
+        return { title: item.place || "", lng: Number(location.lng), lat: Number(location.lat) };
+      }).filter((item) => Number.isFinite(item.lng) && Number.isFinite(item.lat));
+    }
+
+    function normalizePath(polyline) {
+      if (!Array.isArray(polyline)) return [];
+      return polyline.map((point) => {
+        if (Array.isArray(point)) return [Number(point[0]), Number(point[1])];
+        if (point && typeof point === "object") return [Number(point.lng), Number(point.lat)];
+        return null;
+      }).filter((point) => point && Number.isFinite(point[0]) && Number.isFinite(point[1]));
+    }
+
+    function buildDayRouteOverview(dayRoute) {
+      if (dayRoute.segments.length) {
+        const first = dayRoute.segments[0];
+        const last = dayRoute.segments[dayRoute.segments.length - 1];
+        const meta = [formatDuration(totalDuration(dayRoute.segments)), formatDistance(totalDistance(dayRoute.segments))].filter(Boolean).join(" · ");
+        return `${first.origin || "起点"} → ${last.destination || "终点"}${meta ? ` · 驾车约 ${meta}` : ""}`;
+      }
+      const names = dayRoute.markers.map((item) => item.title).filter(Boolean);
+      return names.length ? names.join(" → ") : "当天暂无路线";
+    }
+
+    function totalDistance(segments) {
+      return segments.reduce((sum, item) => sum + Number(item.distance_m || 0), 0);
+    }
+
+    function totalDuration(segments) {
+      return segments.reduce((sum, item) => sum + Number(item.duration_s || 0), 0);
+    }
+
+    function formatDistance(distanceM) {
+      const value = Number(distanceM);
+      if (!Number.isFinite(value) || value <= 0) return "";
+      return value >= 1000 ? `${(value / 1000).toFixed(1)} 公里` : `${Math.round(value)} 米`;
+    }
+
+    function formatDuration(durationS) {
+      const value = Number(durationS);
+      if (!Number.isFinite(value) || value <= 0) return "";
+      const minutes = Math.max(1, Math.round(value / 60));
+      if (minutes < 60) return `${minutes} 分钟`;
+      const hours = Math.floor(minutes / 60);
+      const rest = minutes % 60;
+      return rest ? `${hours} 小时 ${rest} 分钟` : `${hours} 小时`;
+    }
+
+    function routeColor(day) {
+      return ["#005daa", "#006a64", "#b95a00", "#722ed1", "#389e0d", "#c41d7f"][Math.max(0, Number(day || 1) - 1) % 6];
+    }
+
+    function renderHotel(plan) {
+      const hotel = plan.hotel_area_recommendation || {};
+      els.hotelPanel.innerHTML = renderSectionShell("住宿地段建议", `
+        <div class="bg-surface-container-lowest rounded-2xl border border-outline-variant/30 panel-shadow p-6">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-gutter">
+            ${infoCard("首选地段", hotel.primary_area || "暂无", "hotel")}
+            ${infoCard("备选地段", hotel.backup_area || "暂无", "apartment")}
+          </div>
+          ${hotel.reason ? `<p class="mt-4 text-on-surface-variant leading-7">${escapeHtml(hotel.reason)}</p>` : ""}
+        </div>
+      `);
+    }
+
+    function renderTips(plan) {
+      const tips = Array.isArray(plan.general_tips) ? plan.general_tips : [];
+      els.tipsPanel.innerHTML = tips.length ? renderSectionShell("其他建议", `
+        <div class="bg-surface-container-lowest rounded-2xl border border-outline-variant/30 panel-shadow p-6">
+          <ul class="grid grid-cols-1 md:grid-cols-2 gap-3">
+            ${tips.map((tip) => `<li class="rounded-xl bg-surface-container-low px-4 py-3 text-sm text-on-surface-variant">${escapeHtml(tip)}</li>`).join("")}
+          </ul>
+        </div>
+      `) : "";
+    }
+
+    function renderSectionShell(title, content) {
+      return `
+        <section class="space-y-4">
+          <h2 class="font-headline-lg-mobile text-headline-lg-mobile md:font-headline-lg md:text-headline-lg">${escapeHtml(title)}</h2>
+          ${content}
+        </section>
+      `;
+    }
+
+    function emptyBlock(text) {
+      return `<div class="rounded-2xl bg-surface-empty border border-outline-variant/30 p-8 text-center text-on-surface-variant">${escapeHtml(text)}</div>`;
+    }
+
+    function formatPlanText(plan) {
+      const lines = [];
+      if (plan.destination) lines.push(`目的地：${plan.destination}`);
+      const start = plan.daily_time_window?.start || "09:00";
+      const end = plan.daily_time_window?.end || "18:00";
+      lines.push(`行程：${plan.days_count || ""}天，节奏 ${formatPace(plan.pace || "balanced")}，每天 ${start} - ${end}`);
+      const weather = plan.weather_summary || {};
+      if (weather.summary || weather.clothing_advice || weather.umbrella_advice) {
+        lines.push("", "天气与出行建议");
+        if (weather.summary) lines.push(`- ${weather.summary}`);
+        if (weather.clothing_advice) lines.push(`- 穿衣：${weather.clothing_advice}`);
+        if (weather.umbrella_advice) lines.push(`- 雨具：${weather.umbrella_advice}`);
+        (weather.safety_tips || []).forEach((tip) => lines.push(`- ${tip}`));
+      }
+      (plan.itinerary_days || []).forEach((day) => {
+        lines.push("", `第 ${day.day} 天：${day.theme || "行程安排"}`);
+        (day.items || []).forEach((item) => {
+          lines.push(`- ${[item.time, item.place].filter(Boolean).join(" ")}`);
+          if (item.address) lines.push(`  地址：${item.address}`);
+          if (item.activity) lines.push(`  安排：${item.activity}`);
+          if (item.transport_tip) lines.push(`  交通：${item.transport_tip}`);
+          if (item.notes) lines.push(`  提醒：${item.notes}`);
+        });
+      });
+      const hotel = plan.hotel_area_recommendation || {};
+      if (hotel.primary_area || hotel.backup_area || hotel.reason) {
+        lines.push("", "住宿地段建议");
+        if (hotel.primary_area) lines.push(`- 首选：${hotel.primary_area}`);
+        if (hotel.backup_area) lines.push(`- 备选：${hotel.backup_area}`);
+        if (hotel.reason) lines.push(`- 理由：${hotel.reason}`);
+      }
+      return lines.join("\n").trim() || JSON.stringify(plan, null, 2);
+    }
+
+    async function loadHistory() {
+      if (!state.user) return;
+      try {
+        const response = await fetch("/api/plans?limit=20", { credentials: "same-origin" });
+        if (!response.ok) throw new Error(`状态码 ${response.status}`);
+        const plans = await response.json();
+        els.profileTripsCount.textContent = plans.length;
+        renderHistory(plans);
+      } catch (error) {
+        els.historyList.innerHTML = emptyBlock(`历史行程加载失败：${error.message}`);
+      }
+    }
+
+    function renderHistory(plans) {
+      if (!plans.length) {
+        els.historyList.innerHTML = emptyBlock("暂无历史行程。生成一次规划后会自动保存。");
+        return;
+      }
+      els.historyList.innerHTML = plans.map((item) => {
+        const plan = parsePlan(item.answer);
+        const title = plan?.destination ? `${plan.destination} ${plan.days_count || ""}天` : item.user_message.slice(0, 28);
+        const createdAt = new Date(item.created_at).toLocaleString("zh-CN");
+        return `
+          <article class="bg-surface-container-lowest rounded-2xl border border-outline-variant/30 panel-shadow overflow-hidden">
+            <div class="h-28 bg-surface-container-high flex items-center justify-center text-primary">
+              <span class="material-symbols-outlined text-5xl">map</span>
+            </div>
+            <div class="p-5">
+              <div class="flex items-center justify-between gap-3">
+                <h3 class="font-headline-md text-headline-md">${escapeHtml(title)}</h3>
+                <span class="text-xs text-on-surface-variant">${escapeHtml(createdAt)}</span>
+              </div>
+              <p class="text-sm text-on-surface-variant mt-3 line-clamp-3">${escapeHtml(item.user_message)}</p>
+              <button class="history-open mt-4 h-10 px-4 rounded-xl bg-surface-container-low hover:bg-surface-container text-primary font-semibold" data-answer="${escapeHtml(item.answer)}">查看详情</button>
+            </div>
+          </article>
+        `;
+      }).join("");
+      document.querySelectorAll(".history-open").forEach((button) => {
+        button.addEventListener("click", () => {
+          const plan = parsePlan(button.dataset.answer || "");
+          showView("planning");
+          els.emptyWorkbench.classList.add("hidden-view");
+          els.resultWorkbench.classList.remove("hidden-view");
+          if (plan) {
+            renderAnswer(button.dataset.answer || "");
+          } else {
+            els.streamOutput.textContent = button.dataset.answer || "";
+          }
+        });
+      });
+    }
+
+    async function loadProfile() {
+      if (!state.user) return;
+      try {
+        const response = await fetch("/api/profile", { credentials: "same-origin" });
+        if (!response.ok) return;
+        const profile = await response.json();
+        els.paceInput.value = profile.preferred_pace || "relaxed";
+        els.startTimeInput.value = profile.preferred_start_time || "09:00";
+        els.endTimeInput.value = profile.preferred_end_time || "18:00";
+        els.favoriteCitiesInput.value = (profile.favorite_cities || []).join(", ");
+        els.favoriteTypesInput.value = (profile.favorite_attraction_types || []).join(", ");
+        els.notesInput.value = profile.notes || "";
+        els.profilePaceLabel.textContent = formatPace(profile.preferred_pace || "relaxed");
+      } catch {
+        // 个人偏好不是核心流程，加载失败时保持默认值。
+      }
+    }
+
+    async function saveProfile() {
+      const payload = {
+        preferred_pace: els.paceInput.value,
+        preferred_start_time: els.startTimeInput.value.trim() || null,
+        preferred_end_time: els.endTimeInput.value.trim() || null,
+        favorite_cities: splitCsv(els.favoriteCitiesInput.value),
+        favorite_attraction_types: splitCsv(els.favoriteTypesInput.value),
+        notes: els.notesInput.value.trim() || null
+      };
+      els.profileMessage.textContent = "保存中...";
+      try {
+        const response = await fetch("/api/profile", {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          credentials: "same-origin",
+          body: JSON.stringify(payload)
+        });
+        if (!response.ok) {
+          const data = await safeJson(response);
+          throw new Error(readApiMessage(data) || `状态码 ${response.status}`);
+        }
+        const profile = await response.json();
+        els.profilePaceLabel.textContent = formatPace(profile.preferred_pace || "--");
+        els.profileMessage.textContent = "已保存";
+      } catch (error) {
+        els.profileMessage.textContent = `保存失败：${error.message}`;
+      }
+    }
+
+    function splitCsv(value) {
+      return String(value || "").split(/[，,]/).map((item) => item.trim()).filter(Boolean);
+    }
+
+    function formatPace(value) {
+      const paceMap = {
+        relaxed: "轻松",
+        balanced: "均衡",
+        packed: "紧凑"
+      };
+      return paceMap[value] || value || "--";
+    }
+
+    async function safeJson(response) {
+      try {
+        return await response.json();
+      } catch {
+        return {};
+      }
+    }
+
+    function readApiMessage(payload) {
+      const detail = payload?.detail;
+      if (typeof detail === "string") return detail;
+      if (detail && typeof detail === "object") return detail.message || detail.code;
+      return payload?.message || "";
+    }
+
+    function escapeHtml(value) {
+      return String(value ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+    }
+  </script>
+</body>
+</html>

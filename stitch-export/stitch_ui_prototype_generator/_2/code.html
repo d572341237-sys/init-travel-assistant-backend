@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>VoyageAI - Historical Itineraries</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;600;700&amp;family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "on-background": "#0b1c30",
+                      "on-tertiary-fixed": "#311300",
+                      "on-error-container": "#93000a",
+                      "surface-container": "#e5eeff",
+                      "map-polyline": "#1890ff",
+                      "surface": "#f8f9ff",
+                      "error-container": "#ffdad6",
+                      "surface-empty": "#f1f5f9",
+                      "on-secondary-container": "#006f69",
+                      "inverse-on-surface": "#eaf1ff",
+                      "inverse-primary": "#a5c8ff",
+                      "error": "#ba1a1a",
+                      "on-tertiary-container": "#fffbff",
+                      "on-primary-fixed-variant": "#004785",
+                      "secondary": "#006a64",
+                      "on-error": "#ffffff",
+                      "primary-container": "#0075d5",
+                      "on-primary": "#ffffff",
+                      "primary-fixed-dim": "#a5c8ff",
+                      "tertiary-container": "#b95a00",
+                      "primary": "#005daa",
+                      "surface-variant": "#d3e4fe",
+                      "secondary-fixed-dim": "#50dad1",
+                      "surface-bright": "#f8f9ff",
+                      "tertiary-fixed-dim": "#ffb688",
+                      "surface-container-lowest": "#ffffff",
+                      "on-secondary": "#ffffff",
+                      "surface-container-low": "#eff4ff",
+                      "on-secondary-fixed": "#00201e",
+                      "tertiary": "#934600",
+                      "tertiary-fixed": "#ffdbc7",
+                      "on-primary-fixed": "#001c3a",
+                      "outline": "#707785",
+                      "secondary-container": "#6ef4ea",
+                      "on-primary-container": "#fefcff",
+                      "surface-dim": "#cbdbf5",
+                      "map-marker": "#f5222d",
+                      "primary-fixed": "#d4e3ff",
+                      "inverse-surface": "#213145",
+                      "outline-variant": "#c0c7d6",
+                      "on-tertiary": "#ffffff",
+                      "weather-rain": "#4fa1ff",
+                      "secondary-fixed": "#72f7ed",
+                      "surface-container-high": "#dce9ff",
+                      "surface-tint": "#005fae",
+                      "on-tertiary-fixed-variant": "#733600",
+                      "on-surface": "#0b1c30",
+                      "weather-sunny": "#faad14",
+                      "on-surface-variant": "#404753",
+                      "surface-container-highest": "#d3e4fe",
+                      "background": "#f8f9ff",
+                      "on-secondary-fixed-variant": "#00504b"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "stack-sm": "8px",
+                      "max-width": "1440px",
+                      "margin-desktop": "32px",
+                      "stack-lg": "24px",
+                      "gutter": "16px",
+                      "margin-mobile": "16px",
+                      "stack-md": "16px"
+              },
+              "fontFamily": {
+                      "headline-lg-mobile": [
+                              "Hanken Grotesk"
+                      ],
+                      "body-lg": [
+                              "Inter"
+                      ],
+                      "headline-md": [
+                              "Hanken Grotesk"
+                      ],
+                      "headline-lg": [
+                              "Hanken Grotesk"
+                      ],
+                      "data-mono": [
+                              "JetBrains Mono"
+                      ],
+                      "body-sm": [
+                              "Inter"
+                      ],
+                      "label-caps": [
+                              "Inter"
+                      ]
+              },
+              "fontSize": {
+                      "headline-lg-mobile": [
+                              "24px",
+                              {
+                                      "lineHeight": "32px",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "body-lg": [
+                              "16px",
+                              {
+                                      "lineHeight": "24px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "headline-md": [
+                              "20px",
+                              {
+                                      "lineHeight": "28px",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "headline-lg": [
+                              "32px",
+                              {
+                                      "lineHeight": "40px",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "data-mono": [
+                              "13px",
+                              {
+                                      "lineHeight": "16px",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "body-sm": [
+                              "14px",
+                              {
+                                      "lineHeight": "20px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "label-caps": [
+                              "12px",
+                              {
+                                      "lineHeight": "16px",
+                                      "letterSpacing": "0.05em",
+                                      "fontWeight": "600"
+                              }
+                      ]
+              }
+      },
+          },
+        }
+      </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .material-symbols-outlined[data-weight="fill"] {
+            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            background-color: theme('colors.background');
+            color: theme('colors.on-background');
+        }
+    </style>
+</head>
+<body class="antialiased min-h-screen flex flex-col md:flex-row">
+<!-- TopNavBar (Web & Mobile, though instructions say Web hides bottom, Mobile hides top links. We'll use a responsive approach based on JSON) -->
+<header class="bg-surface shadow-sm fixed top-0 w-full z-50 flex justify-between items-center px-margin-desktop h-16 md:hidden">
+<div class="font-headline-lg-mobile text-headline-lg-mobile text-primary font-bold">VoyageAI</div>
+<div class="flex gap-4">
+<button class="text-on-surface-variant hover:bg-surface-container-low rounded-full p-2 transition-transform duration-200 active:scale-[0.98]">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<button class="text-on-surface-variant hover:bg-surface-container-low rounded-full p-2 transition-transform duration-200 active:scale-[0.98]">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+</button>
+</div>
+</header>
+<!-- SideNavBar (Desktop) -->
+<aside class="hidden md:flex flex-col bg-surface-container-low shadow-md fixed left-0 top-0 bottom-0 w-64 p-4 z-40 transition-all duration-300 ease-in-out">
+<div class="mb-8 pt-4">
+<h1 class="font-headline-md text-headline-md text-on-surface font-bold">VoyageAI</h1>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1">Travel Hub</p>
+</div>
+<button class="bg-primary text-on-primary font-label-caps text-label-caps py-3 px-4 rounded-xl mb-6 shadow-sm hover:bg-primary-container hover:text-on-primary-container transition-colors flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-sm" data-icon="add">add</span>
+            New Trip
+        </button>
+<nav class="flex-1 space-y-2">
+<a class="flex items-center gap-3 px-4 py-3 bg-primary-container text-on-primary-container rounded-xl font-bold transition-all duration-300 hover:bg-surface-container-high" href="#">
+<span class="material-symbols-outlined" data-icon="history">history</span>
+<span class="font-label-caps text-label-caps">History</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container rounded-xl transition-all duration-300 hover:bg-surface-container-high" href="#">
+<span class="material-symbols-outlined" data-icon="bookmark">bookmark</span>
+<span class="font-label-caps text-label-caps">Saved Places</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container rounded-xl transition-all duration-300 hover:bg-surface-container-high" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="font-label-caps text-label-caps">Route Settings</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container rounded-xl transition-all duration-300 hover:bg-surface-container-high" href="#">
+<span class="material-symbols-outlined" data-icon="stars">stars</span>
+<span class="font-label-caps text-label-caps">Member Perks</span>
+</a>
+</nav>
+<div class="mt-auto space-y-2 pt-4 border-t border-outline-variant/30">
+<a class="flex items-center gap-3 px-4 py-2 text-on-surface-variant hover:bg-surface-container rounded-xl transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="help">help</span>
+<span class="font-label-caps text-label-caps">Help Center</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-2 text-on-surface-variant hover:bg-surface-container rounded-xl transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="logout">logout</span>
+<span class="font-label-caps text-label-caps">Log Out</span>
+</a>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="flex-1 w-full max-w-[max-width] mx-auto mt-16 md:mt-0 md:ml-64 p-margin-mobile md:p-margin-desktop min-h-screen flex flex-col">
+<header class="mb-stack-lg flex justify-between items-end">
+<div>
+<h2 class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-background">History</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-2">Review your past AI-generated travel plans.</p>
+</div>
+<!-- Controls -->
+<div class="hidden md:flex gap-3">
+<button class="px-4 py-2 bg-surface-container border border-outline-variant rounded-lg font-label-caps text-label-caps text-on-surface flex items-center gap-2 hover:bg-surface-container-high transition-colors shadow-sm">
+<span class="material-symbols-outlined text-[18px]" data-icon="filter_list">filter_list</span>
+                    Filter
+                </button>
+<button class="px-4 py-2 bg-surface-container border border-outline-variant rounded-lg font-label-caps text-label-caps text-on-surface flex items-center gap-2 hover:bg-surface-container-high transition-colors shadow-sm">
+<span class="material-symbols-outlined text-[18px]" data-icon="sort">sort</span>
+                    Sort
+                </button>
+</div>
+</header>
+<!-- Bento Grid / Cards Layout for Itineraries -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-stack-lg pb-stack-lg">
+<!-- Card 1 -->
+<article class="bg-surface-container-lowest rounded-xl shadow-sm border border-outline-variant/30 overflow-hidden flex flex-col hover:shadow-md transition-shadow duration-300 relative group">
+<div class="h-32 w-full bg-surface-variant relative overflow-hidden">
+<div class="absolute inset-0 bg-cover bg-center w-full h-full opacity-80 group-hover:scale-105 transition-transform duration-500" data-alt="A sweeping aerial view of the Kyoto skyline at twilight, featuring traditional wooden machiya houses blending seamlessly with modern architecture. The lighting is a soft, moody mix of deep twilight blues and warm, glowing orange lanterns strung along narrow streets. A gentle mist hangs over the eastern mountains in the background, creating a serene, historically rich atmosphere that perfectly suits a modern smart travel assistant interface." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBTzIuXf_J_P0wQkSMOvLlRvUvLUTWd5bpIQ6lMsrzuBF340QYAU06EJ_8Ob0z4CQ2AeWBSfm2hu2iXlrkgnxdxvCGGBzEPkb43bX05NrBF-xZV9iLll_NuFjfxZ1vxaRPzjKEyfovJM-sItqTeRo0TqNDg881rnZYGiQ1B4csBMh1N2N-qPXniXfCIu5cslR5nry1lBkj8skovzqBh9Gc3iuN6_X_pbtzmKpgAijnTrIeS90pBBQOz')"></div>
+<div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+<div class="absolute bottom-3 left-4 text-white">
+<h3 class="font-headline-md text-headline-md">Kyoto, Japan</h3>
+<p class="font-data-mono text-data-mono opacity-90">Oct 12 - Oct 18, 2023</p>
+</div>
+</div>
+<div class="p-4 flex-1 flex flex-col">
+<div class="flex items-start gap-2 mb-3">
+<span class="material-symbols-outlined text-secondary mt-0.5 text-[18px]" data-icon="chat_bubble">chat_bubble</span>
+<p class="font-body-sm text-body-sm text-on-surface-variant italic">"A quiet 7-day retreat focusing on ancient temples, local matcha spots, and easy walking paths away from major crowds."</p>
+</div>
+<div class="mt-auto pt-4 border-t border-outline-variant/20 flex justify-between items-center">
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px] text-weather-sunny" data-icon="sunny">sunny</span>
+<span class="font-data-mono text-data-mono text-on-surface-variant">Mostly Sunny</span>
+</div>
+<button class="font-label-caps text-label-caps text-primary hover:text-primary-container transition-colors flex items-center gap-1">
+                            View Details <span class="material-symbols-outlined text-[16px]" data-icon="arrow_forward">arrow_forward</span>
+</button>
+</div>
+</div>
+</article>
+<!-- Card 2 -->
+<article class="bg-surface-container-lowest rounded-xl shadow-sm border border-outline-variant/30 overflow-hidden flex flex-col hover:shadow-md transition-shadow duration-300 relative group">
+<div class="h-32 w-full bg-surface-variant relative overflow-hidden">
+<div class="absolute inset-0 bg-cover bg-center w-full h-full opacity-80 group-hover:scale-105 transition-transform duration-500" data-alt="A vibrant, bustling street scene in Barcelona during golden hour. The architecture highlights Antoni Gaudí's organic curves alongside classic gothic structures. The scene is bathed in warm, sun-drenched light, casting long shadows across cobblestone streets. Colorful tapas bar awnings and lush green street trees pop against the stone buildings, evoking an energetic, culturally immersive travel experience suitable for a high-end travel dashboard." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCkGymv0FJ2nVF39jIQgFDs5pARM-R6JGapO2vk8VqZrkEr2RLVwiXxDS2s1QECizCsVoTBPksa861DRWzedJqkINbe06llNxlx2d-crsIUcwlIqqc_NrKwq07P2k7lUsIH7B6o4_xSK1jMtObTzDpwFV9qt9fZiayojRsGhwIFHczPuZqTwm-1K8wcgWMdF6UblKtZUPL3eYkJFmEfVhNP1Pk5YmQolYP_4rmiakH6LG4kzyVXSJwS')"></div>
+<div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+<div class="absolute bottom-3 left-4 text-white">
+<h3 class="font-headline-md text-headline-md">Barcelona, Spain</h3>
+<p class="font-data-mono text-data-mono opacity-90">Sep 05 - Sep 10, 2023</p>
+</div>
+</div>
+<div class="p-4 flex-1 flex flex-col">
+<div class="flex items-start gap-2 mb-3">
+<span class="material-symbols-outlined text-secondary mt-0.5 text-[18px]" data-icon="chat_bubble">chat_bubble</span>
+<p class="font-body-sm text-body-sm text-on-surface-variant italic">"Architecture and food tour. Hit the major Gaudí spots but find authentic tapas places hidden in the Gothic Quarter."</p>
+</div>
+<div class="mt-auto pt-4 border-t border-outline-variant/20 flex justify-between items-center">
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px] text-outline" data-icon="cloud">cloud</span>
+<span class="font-data-mono text-data-mono text-on-surface-variant">Overcast</span>
+</div>
+<button class="font-label-caps text-label-caps text-primary hover:text-primary-container transition-colors flex items-center gap-1">
+                            View Details <span class="material-symbols-outlined text-[16px]" data-icon="arrow_forward">arrow_forward</span>
+</button>
+</div>
+</div>
+</article>
+<!-- Card 3 -->
+<article class="bg-surface-container-lowest rounded-xl shadow-sm border border-outline-variant/30 overflow-hidden flex flex-col hover:shadow-md transition-shadow duration-300 relative group">
+<div class="h-32 w-full bg-surface-variant relative overflow-hidden">
+<div class="absolute inset-0 bg-cover bg-center w-full h-full opacity-80 group-hover:scale-105 transition-transform duration-500" data-alt="A dramatic view of the Scottish Highlands under a moody, overcast sky. Rolling green hills and deep glens stretch into the distance, with a narrow, winding road disappearing over a crest. The lighting is soft and diffused, emphasizing the rich, saturated greens of the landscape and the steely gray of the sky. The image conveys a sense of rugged adventure and remote natural beauty, fitting a professional, modern travel application." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDV_7kzs3pvc9u0DlL3BwIobziX2paOqUIDrhoc5l3pVfHNq7UETxG62Zpv3nOFGuCrPte1fb-XnPFHKBHevctjSZ_XiYYFEfW2eL6p2OiuPjDdew7tJFNT06Fa00y8UV31bCwqRvCBTLy-32mUBYM1I8ICNOMa3n-jA6HMGWWU1OFJAeg1Yf0GG3ItqcYXUJV9nWG7sbTmmcAnGUA2929Ek9gfPS4SJI18nVjBq4-xCDyarr875vkW')"></div>
+<div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+<div class="absolute bottom-3 left-4 text-white">
+<h3 class="font-headline-md text-headline-md">Scottish Highlands</h3>
+<p class="font-data-mono text-data-mono opacity-90">Jun 20 - Jun 25, 2023</p>
+</div>
+</div>
+<div class="p-4 flex-1 flex flex-col">
+<div class="flex items-start gap-2 mb-3">
+<span class="material-symbols-outlined text-secondary mt-0.5 text-[18px]" data-icon="chat_bubble">chat_bubble</span>
+<p class="font-body-sm text-body-sm text-on-surface-variant italic">"A scenic driving route starting from Edinburgh, focusing on dramatic landscapes, short hikes, and cozy local pubs."</p>
+</div>
+<div class="mt-auto pt-4 border-t border-outline-variant/20 flex justify-between items-center">
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px] text-weather-rain" data-icon="rainy">rainy</span>
+<span class="font-data-mono text-data-mono text-on-surface-variant">Light Rain</span>
+</div>
+<button class="font-label-caps text-label-caps text-primary hover:text-primary-container transition-colors flex items-center gap-1">
+                            View Details <span class="material-symbols-outlined text-[16px]" data-icon="arrow_forward">arrow_forward</span>
+</button>
+</div>
+</div>
+</article>
+</div>
+</main>
+<!-- BottomNavBar (Mobile Only - usually hidden if not top destination, but 'History' fits 'Main ecosystem') -->
+<nav class="md:hidden fixed bottom-0 w-full bg-surface-container-low shadow-[0_-2px_10px_rgba(0,0,0,0.05)] z-50 flex justify-around items-center h-16 pb-safe">
+<a class="flex flex-col items-center gap-1 text-on-surface-variant hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined text-[24px]" data-icon="explore">explore</span>
+<span class="font-label-caps text-[10px]">Planning</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-primary font-bold border-t-2 border-primary pt-[2px]" href="#">
+<span class="material-symbols-outlined text-[24px]" data-icon="history" data-weight="fill">history</span>
+<span class="font-label-caps text-[10px]">History</span>
+</a>
+<a class="flex flex-col items-center gap-1 text-on-surface-variant hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined text-[24px]" data-icon="person">person</span>
+<span class="font-label-caps text-[10px]">Profile</span>
+</a>
+</nav>
+</body></html>

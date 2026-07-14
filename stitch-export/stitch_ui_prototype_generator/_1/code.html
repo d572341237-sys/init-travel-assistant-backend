@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Login - VoyageAI</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@600;700&amp;family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-background": "#0b1c30",
+                    "on-tertiary-fixed": "#311300",
+                    "on-error-container": "#93000a",
+                    "surface-container": "#e5eeff",
+                    "map-polyline": "#1890ff",
+                    "surface": "#f8f9ff",
+                    "error-container": "#ffdad6",
+                    "surface-empty": "#f1f5f9",
+                    "on-secondary-container": "#006f69",
+                    "inverse-on-surface": "#eaf1ff",
+                    "inverse-primary": "#a5c8ff",
+                    "error": "#ba1a1a",
+                    "on-tertiary-container": "#fffbff",
+                    "on-primary-fixed-variant": "#004785",
+                    "secondary": "#006a64",
+                    "on-error": "#ffffff",
+                    "primary-container": "#0075d5",
+                    "on-primary": "#ffffff",
+                    "primary-fixed-dim": "#a5c8ff",
+                    "tertiary-container": "#b95a00",
+                    "primary": "#005daa",
+                    "surface-variant": "#d3e4fe",
+                    "secondary-fixed-dim": "#50dad1",
+                    "surface-bright": "#f8f9ff",
+                    "tertiary-fixed-dim": "#ffb688",
+                    "surface-container-lowest": "#ffffff",
+                    "on-secondary": "#ffffff",
+                    "surface-container-low": "#eff4ff",
+                    "on-secondary-fixed": "#00201e",
+                    "tertiary": "#934600",
+                    "tertiary-fixed": "#ffdbc7",
+                    "on-primary-fixed": "#001c3a",
+                    "outline": "#707785",
+                    "secondary-container": "#6ef4ea",
+                    "on-primary-container": "#fefcff",
+                    "surface-dim": "#cbdbf5",
+                    "map-marker": "#f5222d",
+                    "primary-fixed": "#d4e3ff",
+                    "inverse-surface": "#213145",
+                    "outline-variant": "#c0c7d6",
+                    "on-tertiary": "#ffffff",
+                    "weather-rain": "#4fa1ff",
+                    "secondary-fixed": "#72f7ed",
+                    "surface-container-high": "#dce9ff",
+                    "surface-tint": "#005fae",
+                    "on-tertiary-fixed-variant": "#733600",
+                    "on-surface": "#0b1c30",
+                    "weather-sunny": "#faad14",
+                    "on-surface-variant": "#404753",
+                    "surface-container-highest": "#d3e4fe",
+                    "background": "#f8f9ff",
+                    "on-secondary-fixed-variant": "#00504b"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "stack-sm": "8px",
+                    "max-width": "1440px",
+                    "margin-desktop": "32px",
+                    "stack-lg": "24px",
+                    "gutter": "16px",
+                    "margin-mobile": "16px",
+                    "stack-md": "16px"
+            },
+            "fontFamily": {
+                    "headline-lg-mobile": [
+                            "Hanken Grotesk"
+                    ],
+                    "body-lg": [
+                            "Inter"
+                    ],
+                    "headline-md": [
+                            "Hanken Grotesk"
+                    ],
+                    "headline-lg": [
+                            "Hanken Grotesk"
+                    ],
+                    "data-mono": [
+                            "JetBrains Mono"
+                    ],
+                    "body-sm": [
+                            "Inter"
+                    ],
+                    "label-caps": [
+                            "Inter"
+                    ]
+            },
+            "fontSize": {
+                    "headline-lg-mobile": [
+                            "24px",
+                            {
+                                    "lineHeight": "32px",
+                                    "fontWeight": "700"
+                            }
+                    ],
+                    "body-lg": [
+                            "16px",
+                            {
+                                    "lineHeight": "24px",
+                                    "fontWeight": "400"
+                            }
+                    ],
+                    "headline-md": [
+                            "20px",
+                            {
+                                    "lineHeight": "28px",
+                                    "fontWeight": "600"
+                            }
+                    ],
+                    "headline-lg": [
+                            "32px",
+                            {
+                                    "lineHeight": "40px",
+                                    "fontWeight": "700"
+                            }
+                    ],
+                    "data-mono": [
+                            "13px",
+                            {
+                                    "lineHeight": "16px",
+                                    "fontWeight": "500"
+                            }
+                    ],
+                    "body-sm": [
+                            "14px",
+                            {
+                                    "lineHeight": "20px",
+                                    "fontWeight": "400"
+                            }
+                    ],
+                    "label-caps": [
+                            "12px",
+                            {
+                                    "lineHeight": "16px",
+                                    "letterSpacing": "0.05em",
+                                    "fontWeight": "600"
+                            }
+                    ]
+            }
+        },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface antialiased w-full h-full min-h-screen flex items-center justify-center">
+<!-- Note: Navigation Shells (TopNavBar, SideNavBar) are deliberately suppressed here per the Semantic Shell Mandate for Transactional/Login pages. -->
+<main class="w-full h-screen grid lg:grid-cols-2 overflow-hidden bg-surface-container-lowest">
+<!-- Left Side: Image / Brand Anchor -->
+<div class="relative hidden lg:block h-full w-full bg-surface-variant overflow-hidden">
+<div class="absolute inset-0 bg-primary/10 mix-blend-multiply z-10"></div>
+<img class="absolute inset-0 w-full h-full object-cover z-0" data-alt="A breathtaking, high-resolution photograph of a futuristic bullet train speeding through a serene, misty mountain valley at dawn. The scene evokes a sense of efficient, modern travel mixed with natural beauty. The lighting is soft and atmospheric, with cool blue and teal tones reflecting the VoyageAI brand identity. The train is sleek and aerodynamic, blurred slightly to convey motion, while the surrounding landscape is crisp and majestic, representing a seamless and intelligent journey." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCHzFFYx2vj-iMA2a9Ogyst_LsP_u49DNT0uAg1QDH_UKB0ykUMtUue05GblR062hni9g8zzKOA4kyTRfbsgOEodFS1FFgSC6zl6W5v1XqdnccQ9CBeaPI7DVMp5hVoxzQVF61neaYWc5olnp27nA0OnYeyACukLvmdOAUoeyCL09uytsVyW0qMWquBJEZR7W1GY2a8Ne0gUpxJHygln_abB8IVAhMAzldmOuzWXzP1Jq0DMn1k8_4r"/>
+<div class="absolute bottom-0 left-0 w-full p-margin-desktop bg-gradient-to-t from-on-background/80 to-transparent z-20">
+<div class="max-w-md">
+<p class="font-headline-md text-headline-md text-on-primary mb-stack-sm">Experience the world, intelligently.</p>
+<p class="font-body-lg text-body-lg text-surface-container-high">VoyageAI transforms your travel dreams into perfectly orchestrated realities, balancing efficiency with adventure.</p>
+</div>
+</div>
+</div>
+<!-- Right Side: Login Form Canvas -->
+<div class="flex items-center justify-center p-8 sm:p-12 lg:p-24 h-full w-full overflow-y-auto">
+<div class="w-full max-w-[420px] flex flex-col gap-stack-lg">
+<!-- Header -->
+<div class="flex flex-col gap-stack-sm text-center lg:text-left">
+<div class="font-headline-md text-headline-md text-primary font-bold tracking-tight mb-4 flex items-center justify-center lg:justify-start gap-2">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">travel_explore</span>
+                        VoyageAI
+                    </div>
+<h1 class="font-headline-lg-mobile lg:font-headline-lg text-headline-lg-mobile lg:text-headline-lg text-on-surface">Welcome to VoyageAI</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant">Sign in to access your intelligent itineraries.</p>
+</div>
+<!-- Form -->
+<form class="flex flex-col gap-stack-md mt-4">
+<div class="flex flex-col gap-2">
+<label class="font-label-caps text-label-caps text-on-surface-variant uppercase" for="email">Email Address</label>
+<input class="w-full bg-surface-bright border border-outline-variant rounded-lg px-4 py-3 font-body-lg text-body-lg text-on-surface placeholder:text-outline focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none transition-colors shadow-sm" id="email" name="email" placeholder="name@example.com" required="" type="email"/>
+</div>
+<div class="flex flex-col gap-2">
+<div class="flex justify-between items-center">
+<label class="font-label-caps text-label-caps text-on-surface-variant uppercase" for="password">Password</label>
+<a class="font-body-sm text-body-sm text-primary hover:text-primary-container transition-colors" href="#">Forgot password?</a>
+</div>
+<input class="w-full bg-surface-bright border border-outline-variant rounded-lg px-4 py-3 font-body-lg text-body-lg text-on-surface placeholder:text-outline focus:border-primary focus:ring-1 focus:ring-primary focus:outline-none transition-colors shadow-sm" id="password" name="password" placeholder="••••••••" required="" type="password"/>
+</div>
+<button class="mt-4 w-full bg-primary text-on-primary rounded-lg py-3 px-4 font-label-caps text-label-caps uppercase tracking-wider hover:bg-surface-tint active:scale-[0.98] transition-all duration-200 shadow-md hover:shadow-lg flex items-center justify-center gap-2" type="submit">
+                        Sign In
+                        <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+</button>
+</form>
+<!-- Divider -->
+<div class="relative flex items-center py-4">
+<div class="flex-grow border-t border-outline-variant/50"></div>
+<span class="flex-shrink-0 mx-4 font-body-sm text-body-sm text-on-surface-variant">Or continue with</span>
+<div class="flex-grow border-t border-outline-variant/50"></div>
+</div>
+<!-- Social Login -->
+<div class="flex flex-col gap-stack-sm">
+<button class="w-full flex items-center justify-center gap-3 bg-surface-container-lowest border border-outline-variant rounded-lg py-3 px-4 font-body-lg text-body-lg text-on-surface hover:bg-surface-container-low transition-colors shadow-sm" type="button">
+<svg class="w-5 h-5" fill="none" viewbox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"></path>
+<path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"></path>
+<path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"></path>
+<path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"></path>
+</svg>
+                        Google
+                    </button>
+</div>
+<!-- Footer / Toggle -->
+<p class="text-center font-body-sm text-body-sm text-on-surface-variant mt-4">
+                    Don't have an account? 
+                    <a class="text-primary font-medium hover:underline hover:text-primary-container transition-colors" href="#">Create one now</a>
+</p>
+</div>
+</div>
+</main>
+</body></html>

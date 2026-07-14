@@ -1,0 +1,8 @@
+### 综合旅行规划 + 自动酒店地段追问
+POST http://127.0.0.1:8001/api/chat
+Content-Type: application/json; charset=utf-8
+
+{
+  "thread_id": "auto-hotel-demo-001",
+  "message": "帮我规划泉州两天路线，想去开元寺、西街、清源山，轻松一点"
+}

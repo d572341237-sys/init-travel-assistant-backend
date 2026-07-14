@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>User Profile - VoyageAI</title>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@100..900&family=Inter:wght@100..900&display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS & Config -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-background": "#0b1c30",
+                        "on-tertiary-fixed": "#311300",
+                        "on-error-container": "#93000a",
+                        "surface-container": "#e5eeff",
+                        "map-polyline": "#1890ff",
+                        "surface": "#f8f9ff",
+                        "error-container": "#ffdad6",
+                        "surface-empty": "#f1f5f9",
+                        "on-secondary-container": "#006f69",
+                        "inverse-on-surface": "#eaf1ff",
+                        "inverse-primary": "#a5c8ff",
+                        "error": "#ba1a1a",
+                        "on-tertiary-container": "#fffbff",
+                        "on-primary-fixed-variant": "#004785",
+                        "secondary": "#006a64",
+                        "on-error": "#ffffff",
+                        "primary-container": "#0075d5",
+                        "on-primary": "#ffffff",
+                        "primary-fixed-dim": "#a5c8ff",
+                        "tertiary-container": "#b95a00",
+                        "primary": "#005daa",
+                        "surface-variant": "#d3e4fe",
+                        "secondary-fixed-dim": "#50dad1",
+                        "surface-bright": "#f8f9ff",
+                        "tertiary-fixed-dim": "#ffb688",
+                        "surface-container-lowest": "#ffffff",
+                        "on-secondary": "#ffffff",
+                        "surface-container-low": "#eff4ff",
+                        "on-secondary-fixed": "#00201e",
+                        "tertiary": "#934600",
+                        "tertiary-fixed": "#ffdbc7",
+                        "on-primary-fixed": "#001c3a",
+                        "outline": "#707785",
+                        "secondary-container": "#6ef4ea",
+                        "on-primary-container": "#fefcff",
+                        "surface-dim": "#cbdbf5",
+                        "map-marker": "#f5222d",
+                        "primary-fixed": "#d4e3ff",
+                        "inverse-surface": "#213145",
+                        "outline-variant": "#c0c7d6",
+                        "on-tertiary": "#ffffff",
+                        "weather-rain": "#4fa1ff",
+                        "secondary-fixed": "#72f7ed",
+                        "surface-container-high": "#dce9ff",
+                        "surface-tint": "#005fae",
+                        "on-tertiary-fixed-variant": "#733600",
+                        "on-surface": "#0b1c30",
+                        "weather-sunny": "#faad14",
+                        "on-surface-variant": "#404753",
+                        "surface-container-highest": "#d3e4fe",
+                        "background": "#f8f9ff",
+                        "on-secondary-fixed-variant": "#00504b"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "stack-sm": "8px",
+                        "max-width": "1440px",
+                        "margin-desktop": "32px",
+                        "stack-lg": "24px",
+                        "gutter": "16px",
+                        "margin-mobile": "16px",
+                        "stack-md": "16px"
+                    },
+                    "fontFamily": {
+                        "headline-lg-mobile": ["Hanken Grotesk"],
+                        "body-lg": ["Inter"],
+                        "headline-md": ["Hanken Grotesk"],
+                        "headline-lg": ["Hanken Grotesk"],
+                        "data-mono": ["JetBrains Mono"],
+                        "body-sm": ["Inter"],
+                        "label-caps": ["Inter"]
+                    },
+                    "fontSize": {
+                        "headline-lg-mobile": ["24px", { "lineHeight": "32px", "fontWeight": "700" }],
+                        "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "headline-md": ["20px", { "lineHeight": "28px", "fontWeight": "600" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "fontWeight": "700" }],
+                        "data-mono": ["13px", { "lineHeight": "16px", "fontWeight": "500" }],
+                        "body-sm": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "label-caps": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        /* Hide scrollbar for category chips */
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-lg min-h-screen flex flex-col">
+<!-- TopNavBar Component -->
+<nav class="bg-surface/80 shadow-sm flex justify-between items-center w-full px-margin-desktop h-16 fixed top-0 z-50 backdrop-blur-md full-width">
+<div class="flex items-center gap-stack-lg">
+<span class="font-headline-lg text-headline-lg font-bold text-primary">VoyageAI</span>
+<div class="hidden md:flex gap-stack-md ml-stack-lg items-center h-full pt-1">
+<a class="text-on-surface-variant hover:text-primary transition-colors font-body-lg text-body-lg py-4 border-b-2 border-transparent" href="#">Planning</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors font-body-lg text-body-lg py-4 border-b-2 border-transparent" href="#">History</a>
+<a class="text-primary font-bold border-b-2 border-primary pb-1 font-body-lg text-body-lg py-4" href="#">Profile</a>
+</div>
+</div>
+<div class="flex items-center gap-gutter">
+<button class="w-10 h-10 rounded-full flex items-center justify-center text-on-surface-variant hover:bg-surface-container-low transition-colors">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<button class="w-10 h-10 rounded-full flex items-center justify-center text-on-surface-variant hover:bg-surface-container-low transition-colors">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+</button>
+<div class="w-10 h-10 rounded-full bg-surface-variant overflow-hidden ml-2 shadow-sm border border-outline-variant/30">
+<img alt="User profile avatar" class="w-full h-full object-cover" data-alt="A professional headshot of a person, well-lit studio photography, soft white background. Modern, corporate aesthetic fitting for a premium smart travel application user profile avatar. High resolution, clear focus." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCw_euA9_pt4DeTwca43XJkHngcT7qlKaIDPEQMEBb0fldVBQki_Q6qgXbZ_uhBXGi5GQeNHUVVS2JkXDM43bnjscaCtItdaJWgvH6kU8xLz_TZKzFmdajznA5n2XQOrP1qJ5c-TEQLbo9OIQB_jAGv_iXzz1eF-0N89xtfwdKR9lKJGvxR0zO231rNrdVcdxLB5IQoUE0FATz5peoi5jn8-IA0gNpJjNNCauiGVunkLEQAhHE4FSUM"/>
+</div>
+</div>
+</nav>
+<!-- Main Content Area (Workbench Layout) -->
+<main class="flex-grow pt-24 pb-stack-lg px-margin-mobile md:px-margin-desktop w-full max-w-[max-width] mx-auto grid grid-cols-1 lg:grid-cols-[320px_1fr] gap-stack-lg">
+<!-- Left Column: Profile Summary & Actions -->
+<aside class="flex flex-col gap-stack-md">
+<div class="bg-surface rounded-xl p-stack-lg shadow-sm border border-outline-variant/20 flex flex-col items-center text-center">
+<div class="w-24 h-24 rounded-full bg-surface-container-high mb-stack-sm overflow-hidden border-4 border-surface shadow-sm">
+<img class="w-full h-full object-cover" data-alt="A professional headshot of a person, well-lit studio photography, soft white background. Modern, corporate aesthetic fitting for a premium smart travel application user profile avatar. High resolution, clear focus." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD44j7sd1_4LSEKtYxHJpCR1DuPHetvuUsYswd60XRLwjOTya7A-hvfJjkNNqqO6hE_jSQ_Edu27ADbfTei5ktEUSRkZ2EECn2nKnladdMFgTKqV5McYpGEU_bz8WlVr01IFXeRZIr37pK_nFUEo2NpWz8FNNBG12K_WhJ8Z69L4B54b0EWPZyFWsXyS0mS9wejaDlrXJxjjozd8-voz7UXJXI2vX8v4l_6z1BgvL3B_yIHLZ7JIGUY"/>
+</div>
+<h2 class="font-headline-md text-headline-md text-on-surface mt-2">Alex Wanderer</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-stack-lg">Pro Member • Since 2023</p>
+<button class="w-full py-2 px-4 rounded-lg bg-surface-container hover:bg-surface-container-high transition-colors text-on-surface font-label-caps text-label-caps border border-outline-variant/30">
+                    Edit Profile
+                </button>
+</div>
+<!-- Mini Nav/Tabs for Sidebar (Desktop) -->
+<div class="hidden lg:flex flex-col gap-2 mt-stack-md">
+<button class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-surface-container transition-colors text-left w-full">
+<span class="material-symbols-outlined text-outline">history</span>
+<span class="font-body-sm text-body-sm font-medium">Recent Trips</span>
+</button>
+<button class="flex items-center gap-3 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-surface-container transition-colors text-left w-full">
+<span class="material-symbols-outlined text-outline">bookmark</span>
+<span class="font-body-sm text-body-sm font-medium">Saved Places</span>
+</button>
+<button class="flex items-center gap-3 px-4 py-3 rounded-lg bg-primary-container text-on-primary-container font-medium text-left w-full shadow-sm">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">tune</span>
+<span class="font-body-sm text-body-sm">Travel Preferences</span>
+</button>
+</div>
+</aside>
+<!-- Right Column: Preference Configuration (The "Drawer" Content) -->
+<div class="bg-surface rounded-xl shadow-sm border border-outline-variant/20 flex flex-col h-full">
+<!-- Header -->
+<div class="p-stack-lg border-b border-outline-variant/20 flex justify-between items-center bg-surface-container-lowest rounded-t-xl">
+<div>
+<h1 class="font-headline-md text-headline-md text-on-surface">AI Planner Preferences</h1>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1">Customize how VoyageAI builds your itineraries.</p>
+</div>
+<div class="flex gap-stack-sm">
+<button class="px-4 py-2 rounded-lg text-on-surface-variant hover:bg-surface-container transition-colors font-label-caps text-label-caps border border-transparent">
+                        Discard
+                    </button>
+<button class="px-5 py-2 rounded-lg bg-primary text-on-primary hover:bg-surface-tint shadow-sm transition-all font-label-caps text-label-caps flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px]">save</span> Save Changes
+                    </button>
+</div>
+</div>
+<!-- Scrollable Content Area -->
+<div class="p-stack-lg flex flex-col gap-stack-lg overflow-y-auto hide-scrollbar">
+<!-- Section 1: Travel Pace -->
+<section>
+<h3 class="font-headline-md text-headline-md text-on-surface mb-stack-sm flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">directions_run</span> Travel Pace
+                    </h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-stack-md">How intensive do you want your daily schedules to be?</p>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-gutter">
+<!-- Option 1 -->
+<label class="cursor-pointer relative">
+<input class="peer sr-only" name="pace" type="radio"/>
+<div class="h-full p-4 rounded-xl border-2 border-outline-variant/40 bg-surface peer-checked:border-primary peer-checked:bg-primary-container/20 transition-all hover:border-primary/50 group">
+<div class="flex justify-between items-start mb-2">
+<span class="material-symbols-outlined text-secondary">self_care</span>
+<div class="w-5 h-5 rounded-full border-2 border-outline-variant peer-checked:border-primary flex items-center justify-center">
+<div class="w-2.5 h-2.5 rounded-full bg-primary opacity-0 group-hover:opacity-20 peer-checked:opacity-100 transition-opacity"></div>
+</div>
+</div>
+<h4 class="font-body-lg text-body-lg font-medium text-on-surface mb-1">Relaxed</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">Fewer activities, more downtime. Focus on thoroughly exploring 1-2 places per day.</p>
+</div>
+</label>
+<!-- Option 2 (Selected) -->
+<label class="cursor-pointer relative">
+<input checked="" class="peer sr-only" name="pace" type="radio"/>
+<div class="h-full p-4 rounded-xl border-2 border-primary bg-primary-container/10 transition-all hover:border-primary/80 group">
+<div class="flex justify-between items-start mb-2">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">balance</span>
+<div class="w-5 h-5 rounded-full border-2 border-primary flex items-center justify-center">
+<div class="w-2.5 h-2.5 rounded-full bg-primary opacity-100 transition-opacity"></div>
+</div>
+</div>
+<h4 class="font-body-lg text-body-lg font-medium text-on-surface mb-1">Balanced</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">A good mix of popular sights and breaks. Typically 3-4 structured activities.</p>
+</div>
+</label>
+<!-- Option 3 -->
+<label class="cursor-pointer relative">
+<input class="peer sr-only" name="pace" type="radio"/>
+<div class="h-full p-4 rounded-xl border-2 border-outline-variant/40 bg-surface peer-checked:border-primary peer-checked:bg-primary-container/20 transition-all hover:border-primary/50 group">
+<div class="flex justify-between items-start mb-2">
+<span class="material-symbols-outlined text-tertiary">bolt</span>
+<div class="w-5 h-5 rounded-full border-2 border-outline-variant peer-checked:border-primary flex items-center justify-center">
+<div class="w-2.5 h-2.5 rounded-full bg-primary opacity-0 group-hover:opacity-20 peer-checked:opacity-100 transition-opacity"></div>
+</div>
+</div>
+<h4 class="font-body-lg text-body-lg font-medium text-on-surface mb-1">Packed</h4>
+<p class="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">Maximize sightseeing. Early starts, late finishes, covering as much ground as possible.</p>
+</div>
+</label>
+</div>
+</section>
+<hr class="border-outline-variant/20"/>
+<!-- Section 2: Daily Schedule -->
+<section>
+<h3 class="font-headline-md text-headline-md text-on-surface mb-stack-sm flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">schedule</span> Daily Schedule Bounds
+                    </h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-stack-md">Set the earliest you want to start and latest you want to be out.</p>
+<div class="flex flex-col md:flex-row gap-gutter">
+<div class="flex-1 bg-surface-container-low rounded-lg p-4 border border-outline-variant/30 flex items-center gap-4">
+<div class="w-12 h-12 rounded-full bg-surface-container flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">wb_twilight</span>
+</div>
+<div class="flex-grow">
+<label class="font-label-caps text-label-caps text-on-surface-variant block mb-1">Start Day At</label>
+<select class="w-full bg-transparent border-none p-0 font-body-lg text-body-lg text-on-surface focus:ring-0 cursor-pointer">
+<option>07:00 AM</option>
+<option>08:00 AM</option>
+<option selected="">09:00 AM</option>
+<option>10:00 AM</option>
+<option>11:00 AM</option>
+</select>
+</div>
+</div>
+<div class="flex-1 bg-surface-container-low rounded-lg p-4 border border-outline-variant/30 flex items-center gap-4">
+<div class="w-12 h-12 rounded-full bg-surface-container flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">bedtime</span>
+</div>
+<div class="flex-grow">
+<label class="font-label-caps text-label-caps text-on-surface-variant block mb-1">End Day At</label>
+<select class="w-full bg-transparent border-none p-0 font-body-lg text-body-lg text-on-surface focus:ring-0 cursor-pointer">
+<option>06:00 PM</option>
+<option>08:00 PM</option>
+<option selected="">10:00 PM</option>
+<option>11:00 PM</option>
+<option>12:00 AM</option>
+</select>
+</div>
+</div>
+</div>
+</section>
+<hr class="border-outline-variant/20"/>
+<!-- Section 3: Preferred Categories -->
+<section>
+<div class="flex justify-between items-end mb-stack-sm">
+<div>
+<h3 class="font-headline-md text-headline-md text-on-surface flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">interests</span> Preferred Categories
+                            </h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1">Select topics to bias the AI's recommendations.</p>
+</div>
+<span class="font-data-mono text-data-mono text-primary bg-primary-container/20 px-2 py-1 rounded-md">3 Selected</span>
+</div>
+<div class="grid grid-cols-2 md:grid-cols-4 gap-gutter mt-stack-md">
+<!-- Category: Nature -->
+<div class="group cursor-pointer relative h-32 rounded-xl overflow-hidden border border-outline-variant/20 shadow-sm">
+<div class="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-110" data-alt="A serene, high-definition landscape of a lush green forest at sunrise, with soft light filtering through the trees. Corporate, modern, clean aesthetic, vibrant but not overwhelming colors, evoking calm and discovery. 8k resolution, photorealistic." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDykf1pH2_pxAn9vGTHV_otzk6NFrfNYET9fuXYxZrqJldu3DN5B0U5N6Xz5YvlYEH-S9Q_g3f2ZZ70xZZnWcRLkn9nS4QDRUgs6ur6vUmCbAMuOqbgQOmKbm8xw4KpXvkmYNLdzzq0GbwKqofBKK-54JBZmCrACWh_4ORTzLWMyJ36rJSLM8PlHKRKa5PwBAB-b9cCmAPiPNMw1z-bfeTbSZzmvaB9ymA1HMgu9WRLl7MnVsGkV9Zh')"></div>
+<div class="absolute inset-0 bg-gradient-to-t from-inverse-surface/80 via-inverse-surface/30 to-transparent"></div>
+<div class="absolute inset-0 p-3 flex flex-col justify-end">
+<span class="material-symbols-outlined text-on-primary mb-1" style="font-variation-settings: 'FILL' 1;">forest</span>
+<span class="font-body-sm text-body-sm font-medium text-on-primary">Nature</span>
+</div>
+<div class="absolute top-2 right-2 w-6 h-6 rounded-full bg-primary flex items-center justify-center border-2 border-on-primary">
+<span class="material-symbols-outlined text-on-primary text-[14px]" style="font-variation-settings: 'wght' 700;">check</span>
+</div>
+</div>
+<!-- Category: History -->
+<div class="group cursor-pointer relative h-32 rounded-xl overflow-hidden border border-outline-variant/20 shadow-sm">
+<div class="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-110" data-alt="An elegant, close-up shot of ancient architectural columns, bathed in warm afternoon sunlight. The composition is highly structured and professional, using a sophisticated palette of warm stone and deep shadows. Clean lines, modern travel photography style." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCOEPnaN5EcvIfbvKBE-bCTWPoMFgqcjU0yBVTjd8yNsLWHdT8YRYYYy_PxYPLSoiGQCW0HceUMboKFowWvDwPzqEU8DGk4eNLQ3uTpo0M6pybUflzsyaXo8UqDj14ruzkRQysUKd8n1I32kNrEDNQEHGne7bErxXGU3bvMlhyYxHkst4GdWPcQB2iuprU98m0vsPp7l5LQPN6eI2SJfB83ND729B9JuhUAGpKYK80X4reli2oy7cBG')"></div>
+<div class="absolute inset-0 bg-gradient-to-t from-inverse-surface/80 via-inverse-surface/30 to-transparent"></div>
+<div class="absolute inset-0 p-3 flex flex-col justify-end">
+<span class="material-symbols-outlined text-on-primary mb-1" style="font-variation-settings: 'FILL' 1;">account_balance</span>
+<span class="font-body-sm text-body-sm font-medium text-on-primary">History</span>
+</div>
+<div class="absolute top-2 right-2 w-6 h-6 rounded-full bg-primary flex items-center justify-center border-2 border-on-primary">
+<span class="material-symbols-outlined text-on-primary text-[14px]" style="font-variation-settings: 'wght' 700;">check</span>
+</div>
+</div>
+<!-- Category: Food -->
+<div class="group cursor-pointer relative h-32 rounded-xl overflow-hidden border border-outline-variant/20 shadow-sm">
+<div class="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-110" data-alt="A beautifully plated, gourmet meal in a brightly lit, modern restaurant setting. High-end food photography with shallow depth of field, highlighting the textures of the dish. Corporate travel aesthetic, clean and appetizing, soft background blur." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDqkJ5UVU7sxSTgCK-5kAVZ4t-fIBYISjZgXxzAmOkl_nblBVnnI0Sz-PpqcuMAkfklOhDzPGHyWFB4B88w0DHqR7ZiNdFGZ6XoVhh1eCXm851KX_0Wp5rU0XyhxztkC1heZOrchfxcndDdLrCFHe-YNCtnMLSkCYXsdlM8e-qWy4oMA8I-z0Z2-BSYSB5mCVBVpYg1NJAPc7p7w_jKK9begQzs1hlQ7Jx35GCAeBIZeLIxGlEcXJoz')"></div>
+<div class="absolute inset-0 bg-gradient-to-t from-inverse-surface/80 via-inverse-surface/30 to-transparent"></div>
+<div class="absolute inset-0 p-3 flex flex-col justify-end">
+<span class="material-symbols-outlined text-on-primary mb-1" style="font-variation-settings: 'FILL' 1;">restaurant</span>
+<span class="font-body-sm text-body-sm font-medium text-on-primary">Food</span>
+</div>
+<div class="absolute top-2 right-2 w-6 h-6 rounded-full bg-primary flex items-center justify-center border-2 border-on-primary">
+<span class="material-symbols-outlined text-on-primary text-[14px]" style="font-variation-settings: 'wght' 700;">check</span>
+</div>
+</div>
+<!-- Category: Art (Unselected) -->
+<div class="group cursor-pointer relative h-32 rounded-xl overflow-hidden border border-outline-variant/20 shadow-sm opacity-60 hover:opacity-100 transition-opacity">
+<div class="absolute inset-0 bg-surface-container-high transition-transform duration-500 group-hover:scale-110"></div>
+<div class="absolute inset-0 p-3 flex flex-col justify-center items-center text-center">
+<span class="material-symbols-outlined text-on-surface-variant mb-1 text-3xl">palette</span>
+<span class="font-body-sm text-body-sm font-medium text-on-surface-variant">Art & Culture</span>
+</div>
+<div class="absolute inset-0 border-2 border-transparent group-hover:border-primary/30 rounded-xl transition-colors"></div>
+</div>
+</div>
+</section>
+</div>
+</div>
+</main>
+<!-- Footer Component -->
+<footer class="w-full py-8 px-margin-desktop flex flex-col md:flex-row justify-between items-center gap-4 bg-surface-container-lowest border-t border-outline-variant/30 mt-auto">
+<div class="font-headline-md text-headline-md text-on-surface-variant">
+            VoyageAI
+        </div>
+<div class="flex flex-wrap gap-4 justify-center items-center">
+<a class="text-on-surface-variant font-body-sm text-body-sm hover:text-primary transition-colors opacity-80 hover:opacity-100" href="#">Privacy Policy</a>
+<a class="text-on-surface-variant font-body-sm text-body-sm hover:text-primary transition-colors opacity-80 hover:opacity-100" href="#">Terms of Service</a>
+<a class="text-on-surface-variant font-body-sm text-body-sm hover:text-primary transition-colors opacity-80 hover:opacity-100" href="#">Contact Support</a>
+</div>
+<div class="font-body-sm text-body-sm text-on-surface-variant">
+            © 2024 VoyageAI Smart Travel. All rights reserved.
+        </div>
+</footer>
+</body></html>

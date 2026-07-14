@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Account Settings &amp; Profile - VoyageAI</title>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@600;700&amp;family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@500&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Configuration (Provided) -->
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-background": "#0b1c30",
+                        "on-tertiary-fixed": "#311300",
+                        "on-error-container": "#93000a",
+                        "surface-container": "#e5eeff",
+                        "map-polyline": "#1890ff",
+                        "surface": "#f8f9ff",
+                        "error-container": "#ffdad6",
+                        "surface-empty": "#f1f5f9",
+                        "on-secondary-container": "#006f69",
+                        "inverse-on-surface": "#eaf1ff",
+                        "inverse-primary": "#a5c8ff",
+                        "error": "#ba1a1a",
+                        "on-tertiary-container": "#fffbff",
+                        "on-primary-fixed-variant": "#004785",
+                        "secondary": "#006a64",
+                        "on-error": "#ffffff",
+                        "primary-container": "#0075d5",
+                        "on-primary": "#ffffff",
+                        "primary-fixed-dim": "#a5c8ff",
+                        "tertiary-container": "#b95a00",
+                        "primary": "#005daa",
+                        "surface-variant": "#d3e4fe",
+                        "secondary-fixed-dim": "#50dad1",
+                        "surface-bright": "#f8f9ff",
+                        "tertiary-fixed-dim": "#ffb688",
+                        "surface-container-lowest": "#ffffff",
+                        "on-secondary": "#ffffff",
+                        "surface-container-low": "#eff4ff",
+                        "on-secondary-fixed": "#00201e",
+                        "tertiary": "#934600",
+                        "tertiary-fixed": "#ffdbc7",
+                        "on-primary-fixed": "#001c3a",
+                        "outline": "#707785",
+                        "secondary-container": "#6ef4ea",
+                        "on-primary-container": "#fefcff",
+                        "surface-dim": "#cbdbf5",
+                        "map-marker": "#f5222d",
+                        "primary-fixed": "#d4e3ff",
+                        "inverse-surface": "#213145",
+                        "outline-variant": "#c0c7d6",
+                        "on-tertiary": "#ffffff",
+                        "weather-rain": "#4fa1ff",
+                        "secondary-fixed": "#72f7ed",
+                        "surface-container-high": "#dce9ff",
+                        "surface-tint": "#005fae",
+                        "on-tertiary-fixed-variant": "#733600",
+                        "on-surface": "#0b1c30",
+                        "weather-sunny": "#faad14",
+                        "on-surface-variant": "#404753",
+                        "surface-container-highest": "#d3e4fe",
+                        "background": "#f8f9ff",
+                        "on-secondary-fixed-variant": "#00504b"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "stack-sm": "8px",
+                        "max-width": "1440px",
+                        "margin-desktop": "32px",
+                        "stack-lg": "24px",
+                        "gutter": "16px",
+                        "margin-mobile": "16px",
+                        "stack-md": "16px"
+                    },
+                    "fontFamily": {
+                        "headline-lg-mobile": ["Hanken Grotesk"],
+                        "body-lg": ["Inter"],
+                        "headline-md": ["Hanken Grotesk"],
+                        "headline-lg": ["Hanken Grotesk"],
+                        "data-mono": ["JetBrains Mono"],
+                        "body-sm": ["Inter"],
+                        "label-caps": ["Inter"]
+                    },
+                    "fontSize": {
+                        "headline-lg-mobile": ["24px", { "lineHeight": "32px", "fontWeight": "700" }],
+                        "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "headline-md": ["20px", { "lineHeight": "28px", "fontWeight": "600" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "fontWeight": "700" }],
+                        "data-mono": ["13px", { "lineHeight": "16px", "fontWeight": "500" }],
+                        "body-sm": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "label-caps": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body { background-color: theme('colors.background'); color: theme('colors.on-background'); }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .icon-fill { font-variation-settings: 'FILL' 1; }
+        
+        /* Custom Toggle Switch Styles */
+        .toggle-checkbox:checked { right: 0; border-color: theme('colors.primary'); }
+        .toggle-checkbox:checked + .toggle-label { background-color: theme('colors.primary'); }
+        .toggle-checkbox:checked + .toggle-label:after { transform: translateX(100%); border-color: white; }
+        
+        .bento-card {
+            background-color: theme('colors.surface-container-lowest');
+            border-radius: theme('borderRadius.xl');
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+            border: 1px solid theme('colors.outline-variant');
+            padding: theme('spacing.stack-lg');
+            transition: box-shadow 0.2s ease-in-out;
+        }
+        .bento-card:hover {
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.025);
+        }
+    </style>
+</head>
+<body class="antialiased min-h-screen flex flex-col font-body-lg text-body-lg">
+<!-- TopNavBar (Shared Component) -->
+<header class="bg-surface/80 backdrop-blur-md shadow-sm flex justify-between items-center w-full px-margin-desktop h-16 fixed top-0 z-50">
+<div class="flex items-center gap-8">
+<span class="font-headline-lg text-headline-lg font-bold text-primary">VoyageAI</span>
+<nav class="hidden md:flex gap-6 items-center h-full pt-1">
+<a class="font-body-lg text-body-lg text-on-surface-variant hover:text-primary transition-colors hover:bg-surface-container-low px-2 py-1 rounded-DEFAULT" href="#">Planning</a>
+<a class="font-body-lg text-body-lg text-on-surface-variant hover:text-primary transition-colors hover:bg-surface-container-low px-2 py-1 rounded-DEFAULT" href="#">History</a>
+<!-- Active State -->
+<a class="font-body-lg text-body-lg text-primary font-bold border-b-2 border-primary pb-1 hover:bg-surface-container-low px-2 rounded-t-DEFAULT scale-[0.98] transition-transform duration-200" href="#">Profile</a>
+</nav>
+</div>
+<div class="flex items-center gap-4">
+<button class="p-2 text-on-surface-variant hover:bg-surface-container-low rounded-full transition-colors flex items-center justify-center">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<button class="p-2 text-on-surface-variant hover:bg-surface-container-low rounded-full transition-colors flex items-center justify-center">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+</button>
+<div class="w-8 h-8 rounded-full overflow-hidden border border-outline-variant shadow-sm ml-2">
+<img alt="User profile avatar" class="w-full h-full object-cover" data-alt="A professional headshot of a person, well-lit against a neutral clean background, modern corporate aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBoYgmx9-NTXGw2YULkzsOSBfb-y-pyqBIytPC2zggDIrXNmvIFoiNoAGUurGQd_xe05uuRB4tmRplRciKTPVVGt2m5WrCeX5NcV2Mr33Zf52sXFPU23OtN_4QIjXS5eYOjLvp020KtigxmE4dPOCq4781P5UVzjecTwaos2NqQkozx9M3aiKzqOsl5MryE-QhPdq1WqudmXBCv1kQLGCl2gTK27zdh79Y1PoE5xabxODeocusOQ8Mb"/>
+</div>
+</div>
+</header>
+<div class="flex flex-grow pt-16">
+<!-- SideNavBar (Shared Component) -->
+<aside class="fixed left-0 top-16 bottom-0 w-64 flex flex-col p-4 z-40 bg-surface-container-low shadow-md transition-all duration-300 ease-in-out hidden md:flex">
+<div class="mb-8 mt-4 flex flex-col items-center text-center">
+<div class="w-16 h-16 rounded-full overflow-hidden bg-surface mb-3 flex items-center justify-center shadow-sm">
+<span class="material-symbols-outlined text-3xl text-primary icon-fill">assistant</span>
+</div>
+<h2 class="font-headline-md text-headline-md text-on-surface">Travel Hub</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant">AI-Powered Itineraries</p>
+</div>
+<button class="w-full bg-primary text-on-primary py-3 rounded-xl font-bold mb-6 hover:bg-primary-container shadow-sm transition-colors flex items-center justify-center gap-2">
+<span class="material-symbols-outlined">add</span> New Trip
+            </button>
+<nav class="flex-grow flex flex-col gap-2">
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container rounded-xl transition-colors font-label-caps text-label-caps hover:bg-surface-container-high" href="#">
+<span class="material-symbols-outlined" data-icon="history">history</span>
+                    Recent Trips
+                </a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container rounded-xl transition-colors font-label-caps text-label-caps hover:bg-surface-container-high" href="#">
+<span class="material-symbols-outlined" data-icon="bookmark">bookmark</span>
+                    Saved Places
+                </a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container rounded-xl transition-colors font-label-caps text-label-caps hover:bg-surface-container-high" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+                    Route Settings
+                </a>
+<a class="flex items-center gap-3 px-4 py-3 text-on-surface-variant hover:bg-surface-container rounded-xl transition-colors font-label-caps text-label-caps hover:bg-surface-container-high" href="#">
+<span class="material-symbols-outlined" data-icon="stars">stars</span>
+                    Member Perks
+                </a>
+</nav>
+<div class="mt-auto border-t border-outline-variant/30 pt-4 flex flex-col gap-2">
+<a class="flex items-center gap-3 px-4 py-2 text-on-surface-variant hover:bg-surface-container rounded-xl transition-colors font-label-caps text-label-caps hover:bg-surface-container-high" href="#">
+<span class="material-symbols-outlined" data-icon="help">help</span>
+                    Help Center
+                </a>
+<a class="flex items-center gap-3 px-4 py-2 text-error hover:bg-error-container rounded-xl transition-colors font-label-caps text-label-caps" href="#">
+<span class="material-symbols-outlined" data-icon="logout">logout</span>
+                    Log Out
+                </a>
+</div>
+</aside>
+<!-- Main Content -->
+<main class="flex-grow md:ml-64 p-margin-mobile md:p-margin-desktop bg-surface min-h-full">
+<div class="max-w-[1000px] mx-auto w-full">
+<header class="mb-stack-lg">
+<h1 class="font-headline-lg text-headline-lg text-on-background md:font-headline-lg font-headline-lg-mobile md:text-headline-lg text-headline-lg-mobile">Account Settings</h1>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-2">Manage your profile information, security preferences, and communication settings.</p>
+</header>
+<!-- Bento Grid Layout -->
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-gutter">
+<!-- Profile Overview Card (Spans full width top) -->
+<section class="bento-card lg:col-span-3 flex flex-col md:flex-row items-center gap-stack-lg">
+<div class="relative group">
+<div class="w-32 h-32 rounded-full overflow-hidden border-4 border-surface shadow-md">
+<img alt="User Avatar" class="w-full h-full object-cover" data-alt="A close-up, high-quality portrait of a professional looking individual against a clean, modern corporate office background. Soft natural lighting, crisp details." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCj_yDtyIODlJas2WT5SJXMCA1hpDTUjQ3wGsCwoydUvBY9O6_XEnybjQozS28jV2_XkRAjWh33astd_azWu5cgtmsQYOFYEBnYHKWEmDB4E7Yirs1LokHmgI2nTRLNv6oCxbUHyGv-pQd_g5Ak_mLqpm44-rAMrULP5--WX7PKoHaVkAXUbHgOEONVUwwi3MIFticDn-3RVyj9Oveeh69fJwpZhE1Lwnlgc9Fygf4r5X3e1WxXkCNa"/>
+</div>
+<button aria-label="Edit Avatar" class="absolute bottom-0 right-0 bg-primary text-on-primary p-2 rounded-full shadow-md hover:bg-primary-container transition-colors">
+<span class="material-symbols-outlined text-sm">edit</span>
+</button>
+</div>
+<div class="flex-grow text-center md:text-left">
+<h2 class="font-headline-md text-headline-md text-on-background">Alex Mercer</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant">alex.mercer@example.com</p>
+<div class="mt-4 flex flex-wrap gap-2 justify-center md:justify-start">
+<span class="bg-surface-container-high text-on-surface px-3 py-1 rounded-full font-label-caps text-label-caps">VoyageAI Pro</span>
+<span class="bg-surface-container-high text-on-surface px-3 py-1 rounded-full font-label-caps text-label-caps">Joined 2023</span>
+</div>
+</div>
+<div class="flex-shrink-0">
+<button class="bg-surface-container-low border border-outline text-on-surface hover:bg-surface-container-high px-6 py-2 rounded-full font-label-caps text-label-caps transition-colors shadow-sm">
+                                View Public Profile
+                            </button>
+</div>
+</section>
+<!-- Personal Information Form -->
+<section class="bento-card lg:col-span-2 flex flex-col gap-stack-md">
+<h3 class="font-headline-md text-headline-md text-on-background flex items-center gap-2 border-b border-outline-variant/30 pb-3">
+<span class="material-symbols-outlined text-primary">person</span> Personal Details
+                        </h3>
+<form class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
+<div class="flex flex-col gap-1">
+<label class="font-label-caps text-label-caps text-on-surface-variant" for="firstName">First Name</label>
+<input class="bg-surface font-body-lg text-body-lg text-on-background border border-outline-variant rounded-DEFAULT px-4 py-2 focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all shadow-sm" id="firstName" type="text" value="Alex"/>
+</div>
+<div class="flex flex-col gap-1">
+<label class="font-label-caps text-label-caps text-on-surface-variant" for="lastName">Last Name</label>
+<input class="bg-surface font-body-lg text-body-lg text-on-background border border-outline-variant rounded-DEFAULT px-4 py-2 focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all shadow-sm" id="lastName" type="text" value="Mercer"/>
+</div>
+<div class="flex flex-col gap-1 md:col-span-2">
+<label class="font-label-caps text-label-caps text-on-surface-variant" for="phone">Phone Number</label>
+<input class="bg-surface font-body-lg text-body-lg text-on-background border border-outline-variant rounded-DEFAULT px-4 py-2 focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all shadow-sm" id="phone" type="tel" value="+1 (555) 123-4567"/>
+</div>
+<div class="flex flex-col gap-1 md:col-span-2">
+<label class="font-label-caps text-label-caps text-on-surface-variant" for="location">Home City (For Itinerary Context)</label>
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant">location_on</span>
+<input class="bg-surface w-full font-body-lg text-body-lg text-on-background border border-outline-variant rounded-DEFAULT pl-10 pr-4 py-2 focus:border-primary focus:ring-1 focus:ring-primary outline-none transition-all shadow-sm" id="location" type="text" value="Seattle, WA"/>
+</div>
+</div>
+<div class="md:col-span-2 flex justify-end mt-4">
+<button class="bg-primary text-on-primary hover:bg-primary-container px-6 py-2 rounded-full font-label-caps text-label-caps transition-colors shadow-sm" type="button">
+                                    Save Changes
+                                </button>
+</div>
+</form>
+</section>
+<!-- Security & Side Stack -->
+<div class="flex flex-col gap-gutter lg:col-span-1">
+<!-- Security Card -->
+<section class="bento-card flex flex-col gap-stack-sm">
+<h3 class="font-headline-md text-headline-md text-on-background flex items-center gap-2 border-b border-outline-variant/30 pb-3 mb-2">
+<span class="material-symbols-outlined text-primary">lock</span> Security
+                            </h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-2">Manage your password and security methods.</p>
+<div class="bg-surface-empty p-3 rounded-lg border border-outline-variant/50 flex justify-between items-center mb-4">
+<div>
+<p class="font-body-sm text-body-sm font-semibold text-on-background">Password</p>
+<p class="font-label-caps text-label-caps text-on-surface-variant">Last changed 3 months ago</p>
+</div>
+</div>
+<button class="w-full bg-surface-container-low border border-outline text-on-surface hover:bg-surface-container-high px-4 py-2 rounded-full font-label-caps text-label-caps transition-colors shadow-sm">
+                                Change Password
+                            </button>
+</section>
+<!-- Preferences Card -->
+<section class="bento-card flex flex-col gap-stack-sm flex-grow">
+<h3 class="font-headline-md text-headline-md text-on-background flex items-center gap-2 border-b border-outline-variant/30 pb-3 mb-2">
+<span class="material-symbols-outlined text-primary">tune</span> Preferences
+                            </h3>
+<div class="flex flex-col gap-4 mt-2">
+<div class="flex items-center justify-between">
+<div>
+<p class="font-body-sm text-body-sm font-semibold text-on-background">Itinerary Updates</p>
+<p class="font-label-caps text-label-caps text-on-surface-variant">Push &amp; Email</p>
+</div>
+<div class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
+<input checked="" class="toggle-checkbox absolute block w-5 h-5 rounded-full bg-white border-4 appearance-none cursor-pointer z-10 top-0.5 left-0.5 border-outline transition-transform duration-200 ease-in-out" id="toggle1" name="toggle1" type="checkbox"/>
+<label class="toggle-label block overflow-hidden h-6 rounded-full bg-outline-variant cursor-pointer transition-colors duration-200 ease-in-out" for="toggle1"></label>
+</div>
+</div>
+<div class="flex items-center justify-between">
+<div>
+<p class="font-body-sm text-body-sm font-semibold text-on-background">Marketing Emails</p>
+<p class="font-label-caps text-label-caps text-on-surface-variant">Promos &amp; Offers</p>
+</div>
+<div class="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
+<input class="toggle-checkbox absolute block w-5 h-5 rounded-full bg-white border-4 appearance-none cursor-pointer z-10 top-0.5 left-0.5 border-outline transition-transform duration-200 ease-in-out" id="toggle2" name="toggle2" type="checkbox"/>
+<label class="toggle-label block overflow-hidden h-6 rounded-full bg-outline-variant cursor-pointer transition-colors duration-200 ease-in-out" for="toggle2"></label>
+</div>
+</div>
+</div>
+</section>
+</div>
+</div>
+</div>
+<!-- Footer (Shared Component) - Placed inside main to clear side nav -->
+<footer class="w-full py-8 px-margin-desktop flex flex-col md:flex-row justify-between items-center gap-4 bg-surface-container-lowest border-t border-outline-variant/30 mt-stack-lg flat no shadows">
+<div class="font-headline-md text-headline-md text-on-surface-variant">
+                    VoyageAI
+                </div>
+<div class="font-body-sm text-body-sm text-on-surface-variant">
+                    © 2024 VoyageAI Smart Travel. All rights reserved.
+                </div>
+<div class="flex gap-4">
+<a class="font-body-sm text-body-sm text-on-surface-variant dark:text-outline-variant hover:text-primary dark:hover:text-primary-fixed transition-colors opacity-80 hover:opacity-100" href="#">Privacy Policy</a>
+<a class="font-body-sm text-body-sm text-on-surface-variant dark:text-outline-variant hover:text-primary dark:hover:text-primary-fixed transition-colors opacity-80 hover:opacity-100" href="#">Terms of Service</a>
+<a class="font-body-sm text-body-sm text-on-surface-variant dark:text-outline-variant hover:text-primary dark:hover:text-primary-fixed transition-colors opacity-80 hover:opacity-100" href="#">Contact Support</a>
+</div>
+</footer>
+</main>
+</div>
+</body></html>
