@@ -1,4 +1,4 @@
-# 智能旅行助手后端 MVP
+# 智能旅行助手后端
 
 基于 FastAPI + LangGraph StateGraph 的多 agent 旅行规划 MVP。当前能力：
 
