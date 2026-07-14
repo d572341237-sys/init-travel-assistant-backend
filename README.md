@@ -1,6 +1,6 @@
 # 智能旅行助手后端
 
-基于 FastAPI + LangGraph StateGraph 的多 agent 旅行规划 MVP。当前能力：
+基于 FastAPI + LangGraph StateGraph 的多 agent 旅行规划。当前能力：
 
 - 自然语言询问天气
 - 自然语言旅游路线规划
