@@ -5,6 +5,7 @@ import json
 import re
 from collections.abc import AsyncIterator, Iterator
 from functools import lru_cache
+from time import monotonic
 from typing import Any, Literal, TypedDict
 from uuid import UUID, uuid4
 
@@ -336,13 +337,28 @@ async def _planning_agent_node(state: TravelState) -> dict[str, Any]:
     writer = get_stream_writer()
     writer({"event": "node_start", "data": {"node": "planning_agent"}})
     try:
-        def on_token(token: str) -> None:
+        token_buffer: list[str] = []
+        last_flush = monotonic()
+
+        def flush_tokens(force: bool = False) -> None:
+            nonlocal last_flush
+            if not token_buffer:
+                return
+            content = "".join(token_buffer)
+            if not force and len(content) < 240 and monotonic() - last_flush < 0.6:
+                return
+            token_buffer.clear()
+            last_flush = monotonic()
             writer(
                 {
                     "event": "token",
-                    "data": {"node": "planning_agent", "content": token},
+                    "data": {"node": "planning_agent", "content": content},
                 }
             )
+
+        def on_token(token: str) -> None:
+            token_buffer.append(token)
+            flush_tokens()
 
         result = await run_planning_agent_streaming(
             message=state["message"],
@@ -354,6 +370,7 @@ async def _planning_agent_node(state: TravelState) -> dict[str, Any]:
             auto_fill_remaining_attractions=bool(state.get("auto_fill_remaining_attractions")),
             additional_attractions=state.get("additional_attractions") or [],
         )
+        flush_tokens(force=True)
     except Exception:
         logger.exception("planning agent node failed")
         result = PLANNING_AGENT_PUBLIC_ERROR

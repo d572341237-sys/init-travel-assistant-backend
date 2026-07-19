@@ -1,7 +1,9 @@
 import json
 import logging
 import re
+import asyncio
 from collections.abc import AsyncIterator
+from contextlib import suppress
 from uuid import UUID, uuid4
 
 from fastapi import Depends, FastAPI, HTTPException, Query, Request, Response
@@ -329,8 +331,60 @@ async def chat_stream(request: ChatRequest, http_request: Request) -> StreamingR
                 },
             )
 
+    async def resilient_event_generator() -> AsyncIterator[str]:
+        final_answer = ""
+        queue: asyncio.Queue[dict[str, object] | None] = asyncio.Queue()
+
+        async def produce_events() -> None:
+            try:
+                async for item in stream_travel_agent(
+                    message=request.message,
+                    thread_id=thread_id,
+                ):
+                    await queue.put(item)
+            except Exception:
+                logger.exception("stream travel agent failed")
+                await queue.put(
+                    {
+                        "event": "error",
+                        "data": {
+                            "code": "AGENT_STREAM_FAILED",
+                            "message": "旅行助手暂时无法完成流式请求，请稍后再试。",
+                        },
+                    }
+                )
+            finally:
+                await queue.put(None)
+
+        producer = asyncio.create_task(produce_events())
+        try:
+            while True:
+                try:
+                    item = await asyncio.wait_for(queue.get(), timeout=10)
+                except TimeoutError:
+                    yield _to_sse(event="heartbeat", data={"status": "running"})
+                    continue
+
+                if item is None:
+                    break
+                if item.get("event") == "done":
+                    final_answer = (item.get("data") or {}).get("answer") or ""
+                yield _to_sse(event=str(item["event"]), data=item["data"])
+            if final_answer:
+                _save_travel_plan(
+                    thread_id=thread_id,
+                    user_id=user_id,
+                    user_message=request.message,
+                    answer=final_answer,
+                )
+        finally:
+            if not producer.done():
+                producer.cancel()
+                with suppress(asyncio.CancelledError):
+                    await producer
+
     response = StreamingResponse(
-        event_generator(),
+        resilient_event_generator(),
         media_type="text/event-stream",
         headers={
             "Cache-Control": "no-cache",
