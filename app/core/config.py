@@ -30,6 +30,7 @@ class Settings(BaseSettings):
     database_url: str = Field(default="sqlite:///./travel_assistant.db", alias="DATABASE_URL")
     cookie_secure: bool = Field(default=False, alias="COOKIE_SECURE")
     cookie_samesite: str = Field(default="lax", alias="COOKIE_SAMESITE")
+    cors_origins: str = Field(default="*", alias="CORS_ORIGINS")
 
     model_config = SettingsConfigDict(
         env_file=BASE_DIR / ".env",

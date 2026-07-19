@@ -1,12 +1,31 @@
 from __future__ import annotations
 
 import json
+import logging
 import math
+import os
 import re
-from typing import Any, Callable
+import sys
+from pathlib import Path
+from typing import Annotated, Any, Callable, TypedDict
 
+from langchain_core.messages import BaseMessage, HumanMessage, SystemMessage, ToolMessage
+from langchain_core.tools import BaseTool, StructuredTool
+from langchain_mcp_adapters.tools import load_mcp_tools
+from langchain_mcp_adapters.sessions import StdioConnection
+from langgraph.graph import END, START, StateGraph
+from langgraph.graph.message import add_messages
+from langgraph.prebuilt import ToolNode
+from pydantic import BaseModel, Field
+
+from app.agents.scenic_address_agent import run_scenic_address_agent
 from app.agents.weather_agent import build_chat_model, _content_to_text
-from app.tools.route import fetch_driving_route_segments
+from app.tools.route import fetch_driving_route_segments, get_tour_route_context
+from app.tools.weather import get_weather_forecast
+
+
+logger = logging.getLogger(__name__)
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
 
 
 PLANNING_SYSTEM_PROMPT = """你是智能旅行助手的总 planning agent。
@@ -62,15 +81,50 @@ JSON 结构必须符合：
 """
 
 
+PLANNING_TOOL_SYSTEM_PROMPT = """你是智能旅行助手的总 planning agent。
+在生成最终行程前，你需要像真正的 agent 一样自主判断是否调用工具。
+
+可用工具：
+1. get_weather_forecast：当用户要求结合天气、穿衣、带伞、出行安全，或上下文缺少天气数据时调用。
+2. get_selected_scenic_address_context：当用户是在上一轮候选景点后选择编号、选择景点名称，或要求“你帮我选/直接规划”时调用。这个工具会读取后端会话中保存的候选景点。
+3. get_tour_route_context：当没有上一轮候选景点上下文，但用户直接给出城市和想去的景点/关键词时调用，用于获取高德 POI、地址和景点间驾车信息。
+
+调用原则：
+- 不要编造天气、地址、经纬度、驾车距离和耗时。
+- 如果用户要正式规划多日行程，通常至少需要天气工具和一个地址/路线类工具。
+- 如果已有上下文数据明显足够，可以不重复调用同类工具。
+- 工具调用完成后，用一句中文说明已经拿到哪些数据即可，不要在这个阶段输出最终 JSON。
+"""
+
+
+class PlanningToolState(TypedDict):
+    messages: Annotated[list[BaseMessage], add_messages]
+
+
+class SelectedScenicAddressQuery(BaseModel):
+    selection_message: str = Field(
+        ...,
+        description="用户关于景点选择或自动选择的最新自然语言输入，例如：选择1、3、5，或：你帮我选并直接规划。",
+    )
+
+
 async def run_planning_agent(
     message: str,
     weather_result: Any,
     scenic_address_result: dict[str, Any],
+    thread_id: str | None = None,
+    auto_select_attractions: bool = False,
+    auto_fill_remaining_attractions: bool = False,
+    additional_attractions: list[str] | None = None,
 ) -> str:
     return await run_planning_agent_streaming(
         message=message,
         weather_result=weather_result,
         scenic_address_result=scenic_address_result,
+        thread_id=thread_id,
+        auto_select_attractions=auto_select_attractions,
+        auto_fill_remaining_attractions=auto_fill_remaining_attractions,
+        additional_attractions=additional_attractions,
     )
 
 
@@ -79,6 +133,10 @@ async def run_planning_agent_streaming(
     weather_result: Any,
     scenic_address_result: dict[str, Any],
     on_token: Callable[[str], None] | None = None,
+    thread_id: str | None = None,
+    auto_select_attractions: bool = False,
+    auto_fill_remaining_attractions: bool = False,
+    additional_attractions: list[str] | None = None,
 ) -> str:
     if scenic_address_result.get("error"):
         return str(scenic_address_result["error"])
@@ -89,6 +147,20 @@ async def run_planning_agent_streaming(
         "weather_result": weather_result,
         "scenic_address_result": scenic_address_result,
     }
+    try:
+        tool_context = await _run_planning_tool_calling(
+            message=message,
+            payload=payload,
+            thread_id=thread_id,
+            auto_select_attractions=auto_select_attractions,
+            auto_fill_remaining_attractions=auto_fill_remaining_attractions,
+            additional_attractions=additional_attractions or [],
+        )
+    except Exception:
+        logger.exception("planning tool calling failed")
+        tool_context = []
+    if tool_context:
+        payload["planning_tool_results"] = tool_context
     messages = [
         ("system", PLANNING_SYSTEM_PROMPT),
         (
@@ -110,6 +182,162 @@ async def run_planning_agent_streaming(
 
     response = await llm.ainvoke(messages)
     return await _normalize_and_enrich_plan_json(_content_to_text(response.content), fallback_payload=payload)
+
+
+async def _run_planning_tool_calling(
+    message: str,
+    payload: dict[str, Any],
+    thread_id: str | None,
+    auto_select_attractions: bool,
+    auto_fill_remaining_attractions: bool,
+    additional_attractions: list[str],
+) -> list[dict[str, Any]]:
+    tools = await _load_planning_tools(
+        thread_id=thread_id,
+        auto_select_attractions=auto_select_attractions,
+        auto_fill_remaining_attractions=auto_fill_remaining_attractions,
+        additional_attractions=additional_attractions,
+    )
+    if not tools:
+        return []
+
+    llm_with_tools = build_chat_model().bind_tools(tools)
+    tool_node = ToolNode(tools)
+
+    async def agent_node(state: PlanningToolState) -> dict[str, list[BaseMessage]]:
+        response = await llm_with_tools.ainvoke(state["messages"])
+        return {"messages": [response]}
+
+    def should_continue(state: PlanningToolState) -> str:
+        messages = state["messages"]
+        last_message = messages[-1] if messages else None
+        tool_calls = getattr(last_message, "tool_calls", None) or []
+        if tool_calls and _tool_call_rounds(messages) < 3:
+            return "tools"
+        return END
+
+    graph = StateGraph(PlanningToolState)
+    graph.add_node("agent", agent_node)
+    graph.add_node("tools", tool_node)
+    graph.add_edge(START, "agent")
+    graph.add_conditional_edges("agent", should_continue, {"tools": "tools", END: END})
+    graph.add_edge("tools", "agent")
+    app = graph.compile()
+
+    result = await app.ainvoke(
+        {
+            "messages": [
+                SystemMessage(content=PLANNING_TOOL_SYSTEM_PROMPT),
+                HumanMessage(
+                    content=(
+                        "请根据用户最新输入和已有上下文，判断是否需要调用工具补充天气、景点地址或路线数据。\n"
+                        f"{json.dumps({'user_message': message, 'existing_context': payload}, ensure_ascii=False)}"
+                    )
+                ),
+            ]
+        },
+        config={"recursion_limit": 8},
+    )
+    tool_results = _extract_tool_results(result.get("messages") or [])
+    logger.info("planning agent tool calls: %s", [item.get("tool") for item in tool_results])
+    return tool_results
+
+
+def _build_planning_tools(
+    thread_id: str | None,
+    auto_select_attractions: bool,
+    auto_fill_remaining_attractions: bool,
+    additional_attractions: list[str],
+) -> list[BaseTool]:
+    async def get_selected_scenic_address_context(selection_message: str) -> str:
+        result = await run_scenic_address_agent(
+            message=selection_message,
+            thread_id=thread_id,
+            auto_select_attractions=auto_select_attractions,
+            auto_fill_remaining_attractions=auto_fill_remaining_attractions,
+            additional_attractions=additional_attractions,
+        )
+        return json.dumps(result, ensure_ascii=False)
+
+    selected_context_tool = StructuredTool.from_function(
+        coroutine=get_selected_scenic_address_context,
+        name="get_selected_scenic_address_context",
+        description=(
+            "读取当前后端会话中保存的候选景点，根据用户最新选择或自动选择要求，"
+            "返回已选景点的高德 POI、地址、经纬度和景点间路线信息。"
+        ),
+        args_schema=SelectedScenicAddressQuery,
+    )
+    return [get_weather_forecast, selected_context_tool, get_tour_route_context]
+
+
+async def _load_planning_tools(
+    thread_id: str | None,
+    auto_select_attractions: bool,
+    auto_fill_remaining_attractions: bool,
+    additional_attractions: list[str],
+) -> list[BaseTool]:
+    connection: StdioConnection = {
+        "transport": "stdio",
+        "command": sys.executable,
+        "args": ["-m", "app.mcp.travel_tools_server"],
+        "cwd": str(PROJECT_ROOT),
+        "env": _build_mcp_env(
+            thread_id=thread_id,
+            auto_select_attractions=auto_select_attractions,
+            auto_fill_remaining_attractions=auto_fill_remaining_attractions,
+            additional_attractions=additional_attractions,
+        ),
+    }
+    try:
+        tools = await load_mcp_tools(None, connection=connection, server_name="travel_tools")
+        if tools:
+            logger.info("planning agent loaded MCP tools: %s", [tool.name for tool in tools])
+            return tools
+    except Exception:
+        logger.exception("failed to load MCP tools, falling back to local tools")
+
+    return _build_planning_tools(
+        thread_id=thread_id,
+        auto_select_attractions=auto_select_attractions,
+        auto_fill_remaining_attractions=auto_fill_remaining_attractions,
+        additional_attractions=additional_attractions,
+    )
+
+
+def _build_mcp_env(
+    thread_id: str | None,
+    auto_select_attractions: bool,
+    auto_fill_remaining_attractions: bool,
+    additional_attractions: list[str],
+) -> dict[str, str]:
+    env = dict(os.environ)
+    env["PYTHONUTF8"] = "1"
+    env["PYTHONIOENCODING"] = "utf-8"
+    env["TRAVEL_MCP_THREAD_ID"] = thread_id or ""
+    env["TRAVEL_MCP_AUTO_SELECT_ATTRACTIONS"] = "true" if auto_select_attractions else "false"
+    env["TRAVEL_MCP_AUTO_FILL_REMAINING_ATTRACTIONS"] = "true" if auto_fill_remaining_attractions else "false"
+    env["TRAVEL_MCP_ADDITIONAL_ATTRACTIONS"] = json.dumps(additional_attractions, ensure_ascii=False)
+    return env
+
+
+def _tool_call_rounds(messages: list[BaseMessage]) -> int:
+    return sum(1 for message in messages if getattr(message, "tool_calls", None))
+
+
+def _extract_tool_results(messages: list[BaseMessage]) -> list[dict[str, Any]]:
+    results: list[dict[str, Any]] = []
+    for message in messages:
+        if not isinstance(message, ToolMessage):
+            continue
+        content = _content_to_text(message.content)
+        results.append(
+            {
+                "tool": getattr(message, "name", "") or "",
+                "content": _parse_json_object(content) or content,
+            }
+        )
+    return results
 
 
 async def _normalize_and_enrich_plan_json(raw_text: str, fallback_payload: dict[str, Any]) -> str:
@@ -359,12 +587,33 @@ def _extract_route_context(source: dict[str, Any]) -> dict[str, Any]:
         if isinstance(route_context, dict):
             return route_context
 
+    tool_route_context = _extract_route_context_from_tool_results(source.get("planning_tool_results"))
+    if tool_route_context:
+        return tool_route_context
+
     route_context = source.get("route_context")
     if isinstance(route_context, dict):
         return route_context
 
     if isinstance(source.get("pois"), list) or isinstance(source.get("segments"), list):
         return source
+    return {}
+
+
+def _extract_route_context_from_tool_results(tool_results: Any) -> dict[str, Any]:
+    if not isinstance(tool_results, list):
+        return {}
+    for item in tool_results:
+        if not isinstance(item, dict):
+            continue
+        content = item.get("content")
+        if not isinstance(content, dict):
+            continue
+        route_context = content.get("route_context")
+        if isinstance(route_context, dict):
+            return route_context
+        if isinstance(content.get("pois"), list) or isinstance(content.get("segments"), list):
+            return content
     return {}
 
 

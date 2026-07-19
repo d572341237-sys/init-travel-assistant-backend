@@ -427,6 +427,13 @@
       mapOverlays: []
     };
 
+    const API_BASE = (window.TRAVEL_ASSISTANT_API_BASE || "").replace(/\/$/, "");
+    const requestCredentials = API_BASE ? "include" : "same-origin";
+
+    function apiUrl(path) {
+      return `${API_BASE}${path}`;
+    }
+
     const els = {
       authView: document.querySelector("#authView"),
       appShell: document.querySelector("#appShell"),
@@ -500,7 +507,7 @@
 
     async function checkLogin() {
       try {
-        const response = await fetch("/api/auth/me", { credentials: "same-origin" });
+        const response = await fetch(apiUrl("/api/auth/me"), { credentials: requestCredentials });
         if (!response.ok) {
           showAuth();
           return;
@@ -538,10 +545,10 @@
       }
       setAuthBusy(true);
       try {
-        const response = await fetch(url, {
+        const response = await fetch(apiUrl(url), {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          credentials: "same-origin",
+          credentials: requestCredentials,
           body: JSON.stringify({ username, password })
         });
         if (!response.ok) {
@@ -567,7 +574,7 @@
     }
 
     async function logout() {
-      await fetch("/api/auth/logout", { method: "POST", credentials: "same-origin" });
+      await fetch(apiUrl("/api/auth/logout"), { method: "POST", credentials: requestCredentials });
       resetPlanning();
       showAuth();
     }
@@ -625,10 +632,10 @@
       els.resultSubtitle.textContent = "规划智能体正在生成结果，页面只展示面向用户的最终内容。";
 
       try {
-        const response = await fetch("/api/chat/stream", {
+        const response = await fetch(apiUrl("/api/chat/stream"), {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          credentials: "same-origin",
+          credentials: requestCredentials,
           body: JSON.stringify({ message })
         });
         if (!response.ok || !response.body) {
@@ -975,7 +982,7 @@
       if (window.AMap) return window.AMap;
       if (state.mapReadyPromise) return state.mapReadyPromise;
       state.mapReadyPromise = (async () => {
-        const response = await fetch("/api/config/map", { credentials: "same-origin" });
+        const response = await fetch(apiUrl("/api/config/map"), { credentials: requestCredentials });
         if (!response.ok) throw new Error(`地图配置接口状态码 ${response.status}`);
         const config = await response.json();
         if (!config.enabled || !config.api_key) throw new Error("缺少高德网页地图密钥配置。");
@@ -1186,7 +1193,7 @@
     async function loadHistory() {
       if (!state.user) return;
       try {
-        const response = await fetch("/api/plans?limit=20", { credentials: "same-origin" });
+        const response = await fetch(apiUrl("/api/plans?limit=20"), { credentials: requestCredentials });
         if (!response.ok) throw new Error(`状态码 ${response.status}`);
         const plans = await response.json();
         els.profileTripsCount.textContent = plans.length;
@@ -1239,7 +1246,7 @@
     async function loadProfile() {
       if (!state.user) return;
       try {
-        const response = await fetch("/api/profile", { credentials: "same-origin" });
+        const response = await fetch(apiUrl("/api/profile"), { credentials: requestCredentials });
         if (!response.ok) return;
         const profile = await response.json();
         els.paceInput.value = profile.preferred_pace || "relaxed";
@@ -1265,10 +1272,10 @@
       };
       els.profileMessage.textContent = "保存中...";
       try {
-        const response = await fetch("/api/profile", {
+        const response = await fetch(apiUrl("/api/profile"), {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
-          credentials: "same-origin",
+          credentials: requestCredentials,
           body: JSON.stringify(payload)
         });
         if (!response.ok) {

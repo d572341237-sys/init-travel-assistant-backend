@@ -74,15 +74,22 @@ SECURITY_HEADERS = {
     ),
 }
 
+
+def _parse_cors_origins(value: str) -> list[str]:
+    origins = [item.strip() for item in value.split(",") if item.strip()]
+    return origins or ["*"]
+
+
 app = FastAPI(
     title="智能旅行助手后端 MVP",
     description="LangGraph 多 agent + 高德地图工具调用 MVP",
     version="0.1.0",
 )
 
+settings = get_settings()
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=_parse_cors_origins(settings.cors_origins),
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

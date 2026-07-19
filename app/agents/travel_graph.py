@@ -16,7 +16,6 @@ from app.agents.route_agent import (
     _extract_keywords_hint as extract_route_keywords_hint,
     run_route_agent,
 )
-from app.agents.scenic_address_agent import run_scenic_address_agent
 from app.agents.weather_agent import (
     _content_to_text,
     _extract_days_hint as extract_weather_days_hint,
@@ -268,7 +267,7 @@ async def _supervisor_node(state: TravelState) -> dict[str, Any]:
 
 
 async def _weather_agent_node(state: TravelState) -> dict[str, Any]:
-    if state.get("selected_agent") not in {"planning_agent", "weather_agent"}:
+    if state.get("selected_agent") != "weather_agent":
         return {}
 
     writer = get_stream_writer()
@@ -306,21 +305,8 @@ async def _route_agent_node(state: TravelState) -> dict[str, Any]:
 
 
 async def _scenic_address_agent_node(state: TravelState) -> dict[str, Any]:
-    if state.get("selected_agent") != "planning_agent":
-        return {}
-
-    try:
-        result = await run_scenic_address_agent(
-            message=state["message"],
-            thread_id=state.get("thread_id"),
-            auto_select_attractions=bool(state.get("auto_select_attractions")),
-            auto_fill_remaining_attractions=bool(state.get("auto_fill_remaining_attractions")),
-            additional_attractions=state.get("additional_attractions") or [],
-        )
-    except Exception:
-        logger.exception("scenic address agent node failed")
-        result = {"error": SCENIC_ADDRESS_AGENT_PUBLIC_ERROR}
-    return {"scenic_address_result": result}
+    # Planning agent now resolves scenic address context through its own LangGraph ToolNode loop.
+    return {}
 
 
 async def _planning_agent_node(state: TravelState) -> dict[str, Any]:
@@ -363,6 +349,10 @@ async def _planning_agent_node(state: TravelState) -> dict[str, Any]:
             weather_result=state.get("weather_result"),
             scenic_address_result=state.get("scenic_address_result") or {},
             on_token=on_token,
+            thread_id=state.get("thread_id"),
+            auto_select_attractions=bool(state.get("auto_select_attractions")),
+            auto_fill_remaining_attractions=bool(state.get("auto_fill_remaining_attractions")),
+            additional_attractions=state.get("additional_attractions") or [],
         )
     except Exception:
         logger.exception("planning agent node failed")
